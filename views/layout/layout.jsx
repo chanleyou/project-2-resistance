@@ -9,8 +9,8 @@ class ProfileLink extends React.Component {
 
 		let cookies = this.props.cookies;
 
-		if (cookies.loggedin === sha256(cookies.username + SALT)) {
-			return <a className="nav-item nav-link" href={"/users/" + cookies.userid}>Profile ({cookies.username})</a>
+		if (cookies.loggedin === sha256(cookies.userid + cookies.username + SALT)) {
+			return <a className="nav-item nav-link" href="#">{cookies.username}</a>
 		} else {
 			return <span />
 		}
@@ -24,8 +24,8 @@ class Login extends React.Component {
     if (this.props.cookies.loggedin) {
       return (
 				<div className="navbar-nav ml-auto">
-					<form method="POST" action="/users/logout" className="form-inline nav-item nav-link">
-							<input type="submit" className="btn btn-link p-0 text-light" value="Logout" />
+					<form method="POST" action="/users/logout" className="form-inline nav-item nav-link">"
+						<input type="submit" className="btn btn-link p-0 text-light" value="Logout" />
 					</form>
 				</div>
       )
@@ -49,8 +49,6 @@ class Layout extends React.Component {
 
   render () {
 		
-		console.log(this.props.cookies);
-
     return (
 
       <html>
@@ -85,8 +83,6 @@ class Layout extends React.Component {
 				<script src="https://code.jquery.com/jquery-3.2.1.slim.min.js" />
 				<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js" />
 				<script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js" />
-				<script src="/socket.io/socket.io.js" />	
-				<script src="script.js" />
       </html>
     )
   }

@@ -1,6 +1,6 @@
 var React = require("react");
 
-class ChatBox extends React.Component {
+class Chat extends React.Component {
 	render () {
 
 		return (
@@ -17,4 +17,4 @@ class ChatBox extends React.Component {
 	}
 }
 
-module.exports = ChatBox;
+module.exports = Chat;

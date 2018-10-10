@@ -1,31 +1,45 @@
 var React = require("react");
 var Layout = require('../layout/layout');
+var Chat = require('../layout/chatbox');
 
-class Index extends React.Component {
+class GameBoard extends React.Component {
 	render () {
 
-		let lobbies = this.props.lobbies.map(lobby => {
+		let lobby = this.props.lobby;
+
+		if (lobby.status === 'open') {
 			return (
-				<div key={lobby.id} className="col-12">
-					<div className="card p3 my-2 shadow-sm">
-						<p>LOBBY ID: {lobby.id}</p>
-						<p>HOST ID: {lobby.host_id}</p>
-						<p>JOIN BUTTONS HERE</p>
-					</div>
-				</div>
+				<div />
 			)
-		})
+		} else {
+			return <div />
+		}
+
+		// 1. player decides who to go on mission
+		// 2. players vote
+		// 3. if yes, mission commences, if not go back to 1, pass down turn
+		// 4. players chosen decide mission success
+		// 5. 
+	}
+} 
+
+class Lobby extends React.Component {
+	render () {
+
+		let lobby = this.props.lobby;
 
 		return (
-
-			<Layout title="Games" cookies={this.props.cookies}>
-				<div className="col-12">
-					<h1 className="mt-4 mb-2">Games</h1>
+			<Layout cookies={this.props.cookies} title={'Game ' + lobby.id}>
+				<div>
+					<GameBoard lobby={lobby} cookies={this.props.cookies} />
+					<Chat cookies={this.props.cookies} />
 				</div>
-
-				{lobbies}
-			
+				<script src="/socket.io/socket.io.js" />	
+				<script src="script.js" />
 			</Layout>
 		)
+
 	}
 }
+
+module.exports = Lobby;

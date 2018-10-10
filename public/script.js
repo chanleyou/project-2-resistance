@@ -2,13 +2,10 @@ const socket = io();
 
 chatForm.addEventListener('submit', (event) => {
 
-	console.log(this);
-
 	event.preventDefault();
 	
 	socket.emit('chat', chatField.value);
 	chatField.value = "";
-
 })
 
 socket.on('chat', (username, message) => {

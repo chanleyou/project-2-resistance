@@ -1,7 +1,5 @@
 const express = require('express');
 const methodOverride = require('method-override');
-const cookieParser = require('cookie-parser');
-const cookieParserIo = require('socket.io-cookie-parser');
 
 const app = express();
 const http = require('http').Server(app);
@@ -13,36 +11,42 @@ app.use(express.urlencoded({
   extended: true
 }));
 
+const cookieParser = require('cookie-parser');
+const cookieParserIo = require('socket.io-cookie-parser');
+const sha256 = require('js-sha256');
 app.use(cookieParser());
 io.use(cookieParserIo());
+
+const SALT = 'latvianpotato';
 
 const reactEngine = require('express-react-views').createEngine();
 app.set('views', __dirname + '/views');
 app.set('view engine', 'jsx');
 app.engine('jsx', reactEngine);
 
-
 const db = require('./db');
-// require('./routes')(app, db);
+require('./routes')(app, db);
 
-app.get('/', (request, response) => {
-
-	response.render('test');
-})
-
+// socket.io stuff
 io.on('connection', (socket) => {
 
-  // if cookies.session = hash(id + SALT)
   let cookies = socket.request.cookies;
-
-  console.log('User connected as: ' + cookies.username);
-
+  
+  if (cookies.loggedin === sha256(cookies.username + SALT)) {
+    
+    console.log('User connected as: ' + cookies.username);
+  } else {
+    console.log('User logging in with cookie authentication error!');
+  }
+  
   socket.on('chat', (message) => {
-    if (cookies.username) {
+
+    if (cookies.loggedin === sha256(cookies.username + SALT)) {
+
       console.log(`Message by ${cookies.username}: ${message}`);
       io.emit('chat', cookies.username, message);
     } else {
-      io.emit('chat', 'Server', 'Error!');
+      io.emit('chat', 'Server', 'Cookie authentication error!');
     }
   })
 
@@ -50,7 +54,6 @@ io.on('connection', (socket) => {
     console.log('user disconnected.');
   })
 })
-
 
 const PORT = process.env.PORT || 3000;
 const server = http.listen(PORT, () => console.log(`Listening on port: ${PORT}`));

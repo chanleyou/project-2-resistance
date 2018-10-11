@@ -15,7 +15,7 @@ module.exports = (app, db) => {
 
 	app.post('/lobbies', lobbies.create);
 
-	app.get('/lobbies/:id', lobbies.lobby);
+	app.get('/lobbies/:id', lobbies.enter);
 	app.get('/lobbies/', lobbies.index);
 
 	app.get('/', (request, response) => {

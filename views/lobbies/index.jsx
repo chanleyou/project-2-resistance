@@ -1,5 +1,6 @@
 var React = require("react");
 var Layout = require('../layout/layout');
+var Chat = require('../layout/chat');
 
 const sha256 = require('js-sha256');
 const SALT = "latvianpotato";
@@ -12,12 +13,32 @@ class CreateGame extends React.Component {
 		if (cookies.loggedin === sha256(cookies.userid + cookies.username + SALT)) {
 			return (
 				<form className ="form-inline my-2" method="POST" action="/lobbies">
-					<input type="text" name="name" placeholder="Lobby Name" required autocomplete="off" />
+					<input type="text" name="name" placeholder="Lobby Name" required autoComplete="off" />
 					<input type="hidden" name="host_id" value={cookies.userid} />
 					<input type="submit" value="Create" className ="btn btn-success ml-1" />
 				</form>
 
 			)
+		} else {
+			return <div />
+		}
+	}
+}
+
+class JoinGame extends React.Component {
+	render () {
+
+		let cookies = this.props.cookies;
+		let lobby = this.props.lobby;
+
+		if (cookies.loggedin === sha256(cookies.userid + cookies.username + SALT)) {
+
+			return (
+				<form className ="form-inline" method="GET" action={"/lobbies/" + lobby.id}>
+					<input type="submit" value="Join" className ="btn btn-sm btn-primary" />
+				</form>
+			)
+
 		} else {
 			return <div />
 		}
@@ -34,9 +55,8 @@ class Index extends React.Component {
 						<p>Lobby ID: {lobby.id}</p>
 						<p>Name: {lobby.name}</p>
 						<p>Host: {lobby.host_name}</p>
-						<p>
-							<a href={"/lobbies/" + lobby.id} className="btn btn-primary btn-sm">Enter</a>
-						</p>
+						<p>Players: {lobby.player_count}/5 -- obselete -- REPLACE WITH players_in_lobby.rowCount</p>
+						<JoinGame cookies={this.props.cookies} lobby={lobby} />
 					</div>
 				</div>
 			)
@@ -51,7 +71,7 @@ class Index extends React.Component {
 				</div>
 
 				{lobbies}
-			
+
 			</Layout>
 		)
 	}

@@ -1,0 +1,77 @@
+WHAT DOES LOBBY NEED?
+
+- lobbies WHERE id = #;
+- players_in_lobby WHERE lobby_id = #;
+- mission STUFF ALL OF IT 
+
+HOST CREATES lobby
+
+- host is first player in lobby, player number 1
+
+	- lobby round starts at 0: waiting for players
+
+	- every time a player joins, player_count ++;
+
+		- CREATE NEW player_in_lobby:
+		- player_number = previous player_count +1;
+	
+- WHEN player_count ==== 5, game starts:
+
+- the five players are assigned random roles;
+	- SELECT * FROM players_in_lobby WHERE lobby_id = #, 
+	- get the five IDs (players_in_lobby id)
+	- Math.random (0-4), 3 resistance, 2 spies
+
+**********ONCE PLAYERS ARE IN GAME, THEY ARE REFERRED TO BY THEIR ---PLAYER_NUMBER--- RATHER THAN user_id***********
+
+	- Math.random(0-4), random player_number is chosen to start
+			- THIS IS HELD IN lobbies.current_player
+
+	- EACH PLAYER NEEDS A PERSONAL DASHBOARD
+		- shows their personal number
+		- shows their personal roles
+		- SPIES ALSO SEE THE IDENTITY OF THE OTHER SPY
+
+	- LOBBY status = 1 (round 1);
+
+main gameplay loop:
+
+	- if (round = 1 OR 3 OR 4) lobbies.current_player chooses TWO players to go on mission ELSE choose THREE
+
+- players vote on whether the mission should proceed (mission_votes)
+	- each player's interface will see the vote button only if SELECT * FROM mission_votes where player_id = n rowCount === 0;
+
+	SELECT * FROM mission_votes WHERE mission_id = #, 
+	if rowCount === 5, count the votes (how?) 
+		- for (let i in queryResult.rows)
+				if (mission_votes.vote), voteYes++;
+
+				once end, if voteYes >= 3, mission proceeds:
+				else, lobbies.current_player ++, new mission back to start of gameplay loop
+
+	if mission proceeds:
+	MISSION INTERFACE only shows for::: WHERE players_in_lobby.player_number = mission.choice_one/two/three
+		- if players_in_lobby.role = spy, show failure button as well
+	if mission_success.rowCount === mission.total_votes,
+
+	for let i in mission_success, count and show number of votes
+	Mission # succeeded!
+	Mission # failed! n participant(s) sabotaged the mission.
+
+	--- lobbies.round ++, lobbies.current_player++, resistance or spies_pts ++.
+
+	IF resistance/spies_pts >= 3;
+	wins, game ends
+	lobby_status = 6 (game over);
+
+
+
+
+
+
+
+
+
+
+
+

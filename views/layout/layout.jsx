@@ -24,7 +24,7 @@ class Login extends React.Component {
     if (this.props.cookies.loggedin) {
       return (
 				<div className="navbar-nav ml-auto">
-					<form method="POST" action="/users/logout" className="form-inline nav-item nav-link">"
+					<form method="POST" action="/users/logout" className="form-inline nav-item nav-link">
 						<input type="submit" className="btn btn-link p-0 text-light" value="Logout" />
 					</form>
 				</div>

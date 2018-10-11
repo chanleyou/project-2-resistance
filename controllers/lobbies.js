@@ -1,3 +1,6 @@
+const sha256 = require('js-sha256');
+const SALT = 'latvianpotato';
+
 module.exports = (db) => {
 
 	return {
@@ -8,63 +11,119 @@ module.exports = (db) => {
 				if (error) {
 					console.error('error getting lobbies:', error);
 					response.sendStatus(500);
-
+					
 				} else {
-
+					
 					response.render('lobbies/index', {cookies: request.cookies, lobbies: queryResult.rows});
-
+					
 				}
 			})
 		},
-
-		lobby: (request, response) => {
-
-			db.lobbies.getId(request.params, (error, queryResult) => {
-				if (error) {
-					console.error('error getting lobby:', error);
-					response.sendStatus(500);
-
-				} else if (queryResult.rowCount === 0) {
-
-					console.error('Lobby not found.');
-					response.sendStatus(404).send('Lobby not found!');
-
-				} else {
-
-					response.render('lobbies/lobby', {cookies: request.cookies, lobby: queryResult.rows[0]});
-
-				}
-			})
-		},
-
+		
 		create: (request, response) => {
 
 			db.lobbies.create(request.body, (error, queryResult) => {
 				if (error) {
-					console.error('error creating lobby:', error);
+					console.error('Error creating lobby: ', error);
 					response.sendStatus(500);
-				} else if (queryResult.rowCount > 0) {
-
-					let hostJoin = {
-						player_id: request.body.host_id,
-						lobby_id: queryResult.rows[0].id
-					}
-
-					db.lobbies.joinLobby(hostJoin, (error, queryResult) => {
-						if (error) {
-							console.error('error creating lobby:', error);
-							response.sendStatus(500);
-						} else {
-							response.redirect('/lobbies/' + hostJoin.lobby_id);
-						}
-					})
-
 				} else {
-					console.error('Error creating lobby!');
-					response.sendStatus(500);
+
+					response.redirect(`/lobbies/${queryResult.rows[0].id}`);
 				}
 			})
 		},
+
+		enter: (request, response) => {
+
+			let cookies = request.cookies;
+
+			// checks if user is logged in
+			if (cookies.loggedin !== sha256(cookies.userid + cookies.username + SALT)) {
+				response.sendStatus(401).send('User authentication failed. Try logging out and logging in again.');
+
+			} else {
+
+				// finds the lobby
+				db.lobbies.getId(request.params, (error, queryResult) => {
+					if (error) {
+						console.error('Error finding lobby: ', error);
+						response.sendStatus(500);
+	
+					} else if (queryResult.rowCount === 0) {
+	
+						response.send('Lobby not found!');
+									
+					} else {
+	
+						let lobby = queryResult.rows[0];
+	
+						// check if player is in lobby
+						db.lobbies.getPlayers(lobby, (error, queryResult) => {
+							if (error) {
+								console.error('Error getting players in lobby:', error);
+								response.sendStatus(500);
+	
+							} else {
+	
+								let players = queryResult.rows;
+								let playerInGame = false;
+	
+								for (let i in players) {
+									if (cookies.userid == players[i].user_id) {
+										playerInGame = true;
+										break;
+									}
+								}
+
+								// enters if the user is one of the players in the game
+								if (playerInGame) {
+									response.render('lobbies/lobby', {cookies:cookies, lobby: lobby, players: players});
+								} else {
+
+									if (players.length >= 5) {
+
+										response.send('Game is already full!');
+
+									// joins the lobby if it isn't full
+									} else { 
+
+										let joinQuery = {
+											lobby_id: lobby.id,
+											user_id: cookies.userid,
+											player_number: players.length + 1
+										}
+
+										db.lobbies.join(joinQuery, (error, queryResult) => {
+											if (error) {
+												console.error('Error joining lobby: ', error);
+												response.send('Error joining lobby.');
+											} else {
+
+												// gets players again with the player who just joined
+												db.lobbies.getPlayers(lobby, (error, queryResult) => {
+													if (error) {
+														console.error('Error getting players in lobby:', error);
+														response.sendStatus(500);
+													} else {
+
+															response.render('lobbies/lobby', {cookies:cookies, lobby: lobby, players: queryResult.rows});
+														}
+												})
+											}
+										})
+									}
+								}
+							}
+						})
+					}
+				})
+			}
+		},
+		
+
+
+
+
 
 	}
 }

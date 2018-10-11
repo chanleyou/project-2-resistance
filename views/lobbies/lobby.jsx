@@ -1,41 +1,76 @@
 var React = require("react");
 var Layout = require('../layout/layout');
-var Chat = require('../layout/chatbox');
+var Chat = require('../layout/chat');
+
+class Players extends React.Component {
+	render () {
+
+		let players = this.props.players.map(player => {
+			return (
+				<p key={player.player_number} className="mb-1">{player.player_number}. {player.name}</p>
+			)
+		})
+
+		return (
+			<div className="col-12 col-lg-2">
+				<div className="card p-3 my-2 shadow-sm">
+				<h4 className="mb-2">Players</h4>
+					{players}
+				</div>
+			</div>
+		) 
+	}
+}
+
+// class Dashboard extends React.Component
 
 class GameBoard extends React.Component {
 	render () {
 
 		let lobby = this.props.lobby;
+		let players = this.props.players;
 
-		if (lobby.status === 'open') {
-			return (
-				<div />
+		if (players.length < 5) {
+			
+			return (				
+						<h1>Waiting for players...</h1>
 			)
+
+		} else if (players.length === 5 && lobby.round === 0) {
+			
+			return (
+			<h1>Game has five players!</h1>
+			
+			)
+
 		} else {
 			return <div />
 		}
-
-		// 1. player decides who to go on mission
-		// 2. players vote
-		// 3. if yes, mission commences, if not go back to 1, pass down turn
-		// 4. players chosen decide mission success
-		// 5. 
 	}
 } 
 
 class Lobby extends React.Component {
 	render () {
 
+		console.log(this.props);
+
 		let lobby = this.props.lobby;
 
 		return (
 			<Layout cookies={this.props.cookies} title={'Game ' + lobby.id}>
-				<div>
-					<GameBoard lobby={lobby} cookies={this.props.cookies} />
-					<Chat cookies={this.props.cookies} />
+				<div className="col-12 my-3">
+					<h1>{lobby.name}</h1>
 				</div>
-				<script src="/socket.io/socket.io.js" />	
-				<script src="script.js" />
+
+				<div className="col-12 col-lg-10">
+					<div className="card p-3 my-2 shadow-sm">
+						<GameBoard lobby={lobby} cookies={this.props.cookies} players = {this.props.players} />
+					</div>
+				</div>
+
+				<Players players={this.props.players} />
+
+				<Chat cookies={this.props.cookies} />
 			</Layout>
 		)
 

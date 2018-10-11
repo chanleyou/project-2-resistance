@@ -32,7 +32,7 @@ io.on('connection', (socket) => {
 
   let cookies = socket.request.cookies;
   
-  if (cookies.loggedin === sha256(cookies.username + SALT)) {
+  if (cookies.loggedin === sha256(cookies.userid + cookies.username + SALT)) {
     
     console.log('User connected as: ' + cookies.username);
   } else {
@@ -41,7 +41,7 @@ io.on('connection', (socket) => {
   
   socket.on('chat', (message) => {
 
-    if (cookies.loggedin === sha256(cookies.username + SALT)) {
+    if (cookies.loggedin === sha256(cookies.userid + cookies.username + SALT)) {
 
       console.log(`Message by ${cookies.username}: ${message}`);
       io.emit('chat', cookies.username, message);

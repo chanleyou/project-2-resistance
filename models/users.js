@@ -26,7 +26,7 @@ module.exports = (pool) => {
 
 		create: (query, callback) => {
 
-			const queryString = 'INSERT INTO users (name, password) VALUES ($1, $2) RETURNING name';
+			const queryString = 'INSERT INTO users (name, password) VALUES ($1, $2) RETURNING id, name';
 			const values = [query.name, sha256(query.password)];
 
 			pool.query(queryString, values, (error, queryResult) => {

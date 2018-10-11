@@ -1,7 +1,4 @@
 DROP TABLE IF EXISTS users;
-DROP TABLE IF EXISTS lobbies;
-DROP TABLE IF EXISTS players_in_lobby;
-DROP TABLE IF EXISTS lobby_chat;
 
 CREATE TABLE IF NOT EXISTS users (
 	id SERIAL PRIMARY KEY,
@@ -9,19 +6,75 @@ CREATE TABLE IF NOT EXISTS users (
 	password TEXT
 );
 
+DROP TABLE IF EXISTS lobbies;
+
 CREATE TABLE IF NOT EXISTS lobbies (
 	id SERIAL PRIMARY KEY,
 	name TEXT,
 	host_id INTEGER,
-	status TEXT,
-	player_count INTEGER
+	player_count INTEGER, -- or just use players_in_lobby rowCount?
+	round INTEGER,
+	current_player INTEGER,
+	resistance_pts INTEGER,
+	spies_pts INTEGER
 );
+
+DROP TABLE IF EXISTS players_in_lobby;
 
 CREATE TABLE IF NOT EXISTS players_in_lobby (
 	id SERIAL PRIMARY KEY,
 	lobby_id INTEGER,
-	user_id INTEGER
+	user_id INTEGER,
+	player_number INTEGER,
+	role TEXT
 );
+
+DROP TABLE IF EXISTS missions;
+
+CREATE TABLE IF NOT EXISTS missions (
+	id SERIAL PRIMARY KEY,
+	lobby_id INTEGER,
+	leader INTEGER, -- this is the player_number of the person who chose the mission
+	current_round INTEGER, -- 
+	total_votes INTEGER, -- or derive this from current_round?
+	choice_one INTEGER,
+	choice_two INTEGER,
+	choice_three INTEGER -- all from 1-5, referencing player_number
+	--  choice_three is used if current_round is 2 or 5
+);
+
+DROP TABLE IF EXISTS mission_proceed;
+
+CREATE TABLE IF NOT EXISTS mission_proceed (
+	id SERIAL PRIMARY KEY,
+	mission_id INTEGER,
+	player_id INTEGER,
+	vote BOOLEAN
+);
+
+DROP TABLE IF EXISTS mission_success;
+
+CREATE TABLE IF NOT EXISTS mission_success (
+	id SERIAL PRIMARY KEY,
+	mission_id INTEGER,
+	player_number INTEGER,
+	vote BOOLEAN	
+);
+
+DROP TABLE IF EXISTS mission_outcome;
+
+-- is this necessary? for tracking previous games in user interface
+CREATE TABLE IF NOT EXISTS mission_outcome (
+	id SERIAL PRIMARY KEY,
+	lobby_id INTEGER,
+	mission_id INTEGER,
+	round INTEGER,
+	outcome BOOLEAN,
+	total_votes INTEGER,
+	votes_no INTEGER
+);
+
+DROP TABLE IF EXISTS lobby_chat;
 
 CREATE TABLE IF NOT EXISTS lobby_chat (
 	id SERIAL PRIMARY KEY,
@@ -31,9 +84,9 @@ CREATE TABLE IF NOT EXISTS lobby_chat (
 	created_at TIMESTAMPTZ DEFAULT now()
 );
 
-INSERT INTO users (name, password) VALUES ('John', 'ba6be8d873bee4c17eda1a4963e9b0474b33aad645c464baad4b9e4252074d77');
+INSERT INTO users (name, password) VALUES ('John', 'a665a45920422f9d417e4867efdc4fb8a04a1f3fff1fa07e998e86f7f7a27ae3');
 
-INSERT INTO lobbies (name, host_id, status, player_count) VALUES ('Test Game', 1, 'open', 1);
+INSERT INTO lobbies (name, host_id, round, player_count) VALUES ('Test Game', 1, 0, 1);
 
-INSERT INTO players_in_lobby (lobby_id, user_id) VALUES (1, 1);
+INSERT INTO players_in_lobby (lobby_id, user_id, player_number) VALUES (1, 1, 1);
 

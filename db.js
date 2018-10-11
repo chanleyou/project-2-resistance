@@ -2,6 +2,7 @@ const pg = require('pg');
 
 const users = require('./models/users');
 const lobbies = require('./models/lobbies');
+const game = require('./models/game');
 
 var configs = {
   user: 'chanleyou',
@@ -21,6 +22,7 @@ module.exports = {
 	// app models here
   users: users(pool),
   lobbies: lobbies(pool),
+  game: game(pool),
 
   //make queries directly from here
   queryInterface: (text, params, callback) => {

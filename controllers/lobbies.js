@@ -39,7 +39,7 @@ module.exports = (db) => {
 
 			// checks if user is logged in
 			if (cookies.loggedin !== sha256(cookies.userid + cookies.username + SALT)) {
-				response.sendStatus(401).send('User authentication failed. Try logging out and logging in again.');
+				response.sendStatus(401).send('User authentication failed. Try logging in again.');
 
 			} else {
 

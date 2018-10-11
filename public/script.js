@@ -1,4 +1,9 @@
+const models = require('db');
+
+
 const socket = io();	
+
+
 
 chatForm.addEventListener('submit', (event) => {
 
@@ -13,7 +18,9 @@ socket.on('chat', (username, message) => {
 	newLine.textContent = `${username}: ${message}`;
 	chatArea.appendChild(newLine);
 
-	// location.reload();
+	// require db.js
+
+	// location.reload(true);
 
 	// if number of lines > 10, remove first child
 })

@@ -6,7 +6,7 @@ class NewUser extends React.Component {
   render() {
 
     return (
-      <Layout title="Login" cookies={this.props.cookies}>
+      <Layout title="Register" cookies={this.props.cookies}>
         <div className="col">
           <h1 className="my-4">Register</h1> 
 					<ErrorMessage errorMessage={this.props.errorMessage}/>

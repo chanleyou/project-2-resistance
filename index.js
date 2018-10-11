@@ -12,6 +12,7 @@ app.use(express.urlencoded({
 }));
 
 const cookieParser = require('cookie-parser');
+
 const cookieParserIo = require('socket.io-cookie-parser');
 const sha256 = require('js-sha256');
 app.use(cookieParser());
@@ -25,7 +26,7 @@ app.set('view engine', 'jsx');
 app.engine('jsx', reactEngine);
 
 const db = require('./db');
-require('./routes')(app, db);
+require('./routes')(app, db, io);
 
 // socket.io stuff
 io.on('connection', (socket) => {

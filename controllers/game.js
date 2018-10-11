@@ -1,4 +1,4 @@
-module.exports = (db) => {
+module.exports = (db, io) => {
 
 	return {
 

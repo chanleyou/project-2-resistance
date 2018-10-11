@@ -1,11 +1,11 @@
 const sha256 = require('js-sha256');
 const SALT = 'latvianpotato';
 
-module.exports = (app, db) => {
+module.exports = (app, db, io) => {
 
 	const users = require('./controllers/users')(db);
-	const lobbies = require('./controllers/lobbies')(db);
-	const game = require('./controllers/game')(db);
+	const lobbies = require('./controllers/lobbies')(db, io);
+	const game = require('./controllers/game')(db, io);
 
 	app.put('/lobbies/:id/start', game.startGame);
 

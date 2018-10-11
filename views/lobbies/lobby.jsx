@@ -87,7 +87,7 @@ class Dashboard extends React.Component {
 class Lobby extends React.Component {
 	render () {
 
-		console.log(this.props);
+		// console.log(this.props);
 
 		let lobby = this.props.lobby;
 		let players = this.props.players;
@@ -97,7 +97,6 @@ class Lobby extends React.Component {
 		for (let i in players) {
 			if (cookies.userid == players[i].user_id) {
 				thisPlayer = players[i];
-				console.log("This Player: ", thisPlayer);
 				break;
 			}
 		}

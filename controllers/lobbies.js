@@ -1,7 +1,7 @@
 const sha256 = require('js-sha256');
 const SALT = 'latvianpotato';
 
-module.exports = (db) => {
+module.exports = (db, io) => {
 
 	return {
 
@@ -77,6 +77,7 @@ module.exports = (db) => {
 
 								// enters if the user is one of the players in the game
 								if (playerInGame) {
+
 									response.render('lobbies/lobby', {cookies:cookies, lobby: lobby, players: players});
 								} else {
 
@@ -98,6 +99,8 @@ module.exports = (db) => {
 												console.error('Error joining lobby: ', error);
 												response.send('Error joining lobby.');
 											} else {
+
+												io.emit('refresh');
 
 												// gets players again with the player who just joined
 												db.lobbies.getPlayers(lobby, (error, queryResult) => {

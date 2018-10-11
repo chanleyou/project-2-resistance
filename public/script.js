@@ -1,8 +1,20 @@
-const models = require('db');
+const socket = io();
 
+parseCookie = (cookieString) => {
 
-const socket = io();	
+	let output = {};
 
+	let cookies = cookieString.split('; ');
+	
+	for (let i in cookies) {
+		let array = cookies[i].split("=");
+		output[array[0]] = array[1];
+	}
+	return output;
+}
+
+//to get who this player is
+let cookies = parseCookie(document.cookie);
 
 
 chatForm.addEventListener('submit', (event) => {
@@ -13,14 +25,19 @@ chatForm.addEventListener('submit', (event) => {
 	chatField.value = "";
 })
 
+socket.on('refresh', () => {
+	location.reload(true);
+})
+
+// controls the chatbox
 socket.on('chat', (username, message) => {
-	let newLine = document.createElement('li');
+	let newLine = document.createElement('p');
+	newLine.classList.add('my-0');
 	newLine.textContent = `${username}: ${message}`;
 	chatArea.appendChild(newLine);
 
-	// require db.js
-
-	// location.reload(true);
-
-	// if number of lines > 10, remove first child
+	if (chatArea.childNodes.length > 10) {
+		chatArea.removeChild(chatArea.firstChild);
+	}
 })
+

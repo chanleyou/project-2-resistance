@@ -117,9 +117,21 @@ module.exports = (db, io) => {
 
 		getPlayers: (request, response) => {
 
-			console.log(request.params);
-
 			db.lobbies.getPlayers(request.params, (error, queryResult) => {
+				if (error) {
+					console.error('Error getting players in lobby:', error);
+					response.sendStatus(500);
+
+				} else {
+
+					response.send(queryResult.rows);
+				}
+			})
+		},
+
+		getStatus: (request, response) => {
+
+			db.lobbies.getId(request.params, (error, queryResult) => {
 				if (error) {
 					console.error('Error getting players in lobby:', error);
 					response.sendStatus(500);

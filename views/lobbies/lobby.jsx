@@ -17,7 +17,7 @@ class Lobby extends React.Component {
 
 				<div className="col-12 col-lg-10">
 					<div className="card p-3 my-2 shadow-sm">
-						<h1>Gameboard here!</h1>
+						<h1 id='gameStatus' />
 					</div>
 					<div className="card p-3 my-2 shadow-sm">
 						<h4>Dashboard here!</h4>

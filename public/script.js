@@ -35,7 +35,31 @@ const getPlayers = (lobby) => {
 		}
 	})
 
-	request.open("GET", `/lobbies/${lobby.id}/getPlayers`);
+	request.open("POST", `/lobbies/${lobby.id}/getPlayers`);
+	request.send();
+}
+
+const getStatus = (lobby) => {
+	
+	let request = new XMLHttpRequest();
+
+	request.addEventListener("load", function () {
+
+		let response = JSON.parse(this.responseText);
+			
+		while (listPlayers.firstChild) {
+				listPlayers.removeChild(listPlayers.firstChild);
+			}
+
+		for (let i in response) {
+			let playerTag = document.createElement('p');
+			playerTag.classList.add('m-0');
+			playerTag.textContent = `${response[i].player_number} ${response[i].name}`
+			listPlayers.appendChild(playerTag);
+		}
+	})
+
+	request.open("GET", `/lobbies/${lobby.id}/getStatus`);
 	request.send();
 }
 

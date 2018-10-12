@@ -9,8 +9,12 @@ module.exports = (app, db, io) => {
 
 	app.put('/lobbies/:id/start', game.startGame);
 	
-	app.get('/lobbies/:id/getPlayers', lobbies.getPlayers);
+	// client-side JS routes
+	// they're posts instead to gets to make cheating a little harder
+	app.post('/lobbies/:id/status', lobbies.getStatus);
+	app.post('/lobbies/:id/getPlayers', lobbies.getPlayers);
 	
+	// server-side JS routes (renders)
 	app.post('/lobbies', lobbies.create);
 	
 	app.get('/lobbies/:id', lobbies.enter);

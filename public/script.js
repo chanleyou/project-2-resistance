@@ -1,6 +1,5 @@
 const socket = io();
 
-// function to parse cookies
 const parseCookie = (cookieString) => {
 
 	let output = {};
@@ -16,76 +15,49 @@ const parseCookie = (cookieString) => {
 
 const choosePlayerForm = (lobby, players) => {
 
-	chooseForm = document.querySelector('#chooseForm');
+	let chooseForm = document.querySelector('#chooseForm');
 	chooseForm.classList.remove('d-none');
 
-	missionId = document.createElement('input');
+	let missionId = document.createElement('input');
 	missionId.name = 'mission_number';
 	missionId.value = lobby.mission;
 	missionId.type = 'hidden';
 	chooseForm.appendChild(missionId);
 
-	leader = document.createElement('input');
+	let leader = document.createElement('input');
 	leader.name = 'leader';
 	leader.value = lobby.current_player;
 	leader.type = 'hidden';
 	chooseForm.appendChild(leader);
 
-	selectOne = document.createElement('select');
-	selectOne.classList.add('form-control', 'my-1');
-	selectOne.name = 'choiceOne';
-	selectOne.required = 'required';
-	chooseForm.appendChild(selectOne);
-	defaultChoice = document.createElement('option');
-	defaultChoice.value = "";
-	defaultChoice.textContent = "Choose player...";
-	defaultChoice.selected = 'true';
-	selectOne.appendChild(defaultChoice);
+	const populate = (element, name) => {
 
-	for (let i in players) {
-		option = document.createElement('option');
-		option.textContent = `${players[i].player_number} ${players[i].name}`;
-		option.value = players[i].player_number;
-		selectOne.appendChild(option);
-	}
+		element.classList.add('form-control', 'my-1');
+		element.name = name;
+		element.required = 'required';
+		chooseForm.appendChild(element);
+		let defaultChoice = document.createElement('option');
+		defaultChoice.value = "";
+		defaultChoice.textContent = "Choose player...";
+		defaultChoice.selected = 'true';
+		element.appendChild(defaultChoice);
 
-	selectTwo = document.createElement('select');
-	selectTwo.classList.add('form-control', 'my-1');
-	selectTwo.name = 'choiceTwo';
-	selectTwo.required = 'required';
-	chooseForm.appendChild(selectTwo);
-	defaultChoiceTwo = document.createElement('option');
-	defaultChoiceTwo.value = "";
-	defaultChoiceTwo.textContent = "Choose player...";
-	defaultChoiceTwo.selected = 'true';
-	selectTwo.appendChild(defaultChoiceTwo);
-	
-	for (let i in players) {
-		option = document.createElement('option');
-		option.textContent = `${players[i].player_number} ${players[i].name}`;
-		option.value = players[i].player_number;
-		selectTwo.appendChild(option);
-	}
-	
-	if (lobby.mission === 2 || lobby.mission === 5) {
-
-		selectThree = document.createElement('select');
-		selectThree.classList.add('form-control', 'my-1');
-		selectThree.name = 'choiceThree';
-		selectThree.required = 'required';
-		chooseForm.appendChild(selectThree);
-		defaultChoiceThree = document.createElement('option');
-		defaultChoiceThree.value = "";
-		defaultChoiceThree.textContent = "Choose player...";
-		defaultChoiceThree.selected = 'true';
-		selectThree.appendChild(defaultChoiceThree);
-		
 		for (let i in players) {
-			option = document.createElement('option');
+			let option = document.createElement('option');
 			option.textContent = `${players[i].player_number} ${players[i].name}`;
 			option.value = players[i].player_number;
-			selectThree.appendChild(option);
+			element.appendChild(option);
 		}
+	}
+
+	let selectOne = document.createElement('select');
+	populate(selectOne, 'choiceOne');
+	let selectTwo = document.createElement('select');
+	populate(selectTwo, 'choiceTwo');
+
+	if (lobby.mission === 2 || lobby.mission === 5) {
+		let selectThree = document.createElement('select');
+		populate(selectThree, 'choiceThree');
 	}
 
 	submitButton = document.createElement('button');
@@ -97,7 +69,7 @@ const choosePlayerForm = (lobby, players) => {
 
 // central function that decides what to show 
 // called upon by updateGame
-const gameLogic = (lobby, players, cookies) => {
+const gameLogic = (lobby, players, mission, cookies) => {
 
 	let thisPlayer = {};
 	
@@ -209,6 +181,39 @@ const gameLogic = (lobby, players, cookies) => {
 
 				phaseLine.textContent = `It's ${currentPlayer.player_number} ${currentPlayer.name}'s turn to choose who goes on the mission. Waiting for ${currentPlayer.player_number} ${currentPlayer.name} to choose...`;
 			}
+
+		} else if (lobby.phase === 2) {
+
+			if (thisPlayer.player_number === currentPlayer.player_number) {
+				phaseLine.textContent = 'You have chosen the following players for this mission:'
+			} else {
+				phaseLine.textContent = `${currentPlayer.name} has chosen the following players for this mission:`
+			}
+
+			
+			let choices = [];
+
+			for (let i in players) {
+				if (players[i].player_number === mission.choice_one) {
+					 choices.push(players[i]);
+				} else if (players[i].player_number === mission.choice_two) {
+					choices.push(players[i]);
+				} else if (players[i].player_number === mission.choice_three) {
+					choices.push(players[i]);
+				}
+			}
+
+
+			console.log(choices);
+
+			for (let i in choices) {
+				list = document.createElement('li');
+				list.textContent = `${choices[i].player_number} ${choices[i].name}`;
+				choiceUl.appendChild(list);
+			}
+
+			voteForm.classList.remove('d-none');
+			
 		}
 	}
 
@@ -228,9 +233,18 @@ const updateGame = (lobby, cookies) => {
 		request.addEventListener("load", function () {
 	
 			let lobby = JSON.parse(this.responseText);
-	
-			gameLogic(lobby, players, cookies);
 
+			let request = new XMLHttpRequest();
+
+			request.addEventListener('load', function () {
+
+			let mission = JSON.parse(this.responseText);
+
+				gameLogic(lobby, players, mission, cookies);
+			})
+
+			request.open("GET", `/lobbies/${lobby.id}/${lobby.mission}/voting`);
+			request.send();
 		})
 	
 		request.open("GET", `/lobbies/${lobby.id}/status`);
@@ -281,7 +295,10 @@ window.onload = () => {
 	})
 
 	// socket updates game
-	socket.on('updateGame', () => {
-		updateGame(lobby, cookies);
+	socket.on('updateGame', (lobbyFrom) => {
+		if (lobbyFrom.id === lobby.id) {
+
+			updateGame(lobby, cookies);
+		} 
 	})
 }

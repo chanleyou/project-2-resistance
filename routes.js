@@ -8,14 +8,14 @@ module.exports = (app, db, io) => {
 	const game = require('./controllers/game')(db, io);
 
 
+	// client-side JS routes
 	app.put ('/lobbies/:id/choose', game.choosePhase);
 	app.put('/lobbies/:id/start', game.startGame);
 	
-	// client-side JS routes
-	// they're posts instead to gets to make cheating a little harder... though not impossible
-
+	app.get('/lobbies/:id/:mission/voting', game.votingPhase);
+	
 	app.get('/lobbies/:id/status', lobbies.getStatus);
-	app.post('/lobbies/:id/getPlayers', lobbies.getPlayers);
+	app.post('/lobbies/:id/getPlayers', lobbies.getPlayers); // this is a post even though it should be a get to avoid cheating as it reveals player roles
 	
 	// server-side JS routes (renders)
 	app.post('/lobbies', lobbies.create);

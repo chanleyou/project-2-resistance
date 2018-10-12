@@ -40,7 +40,7 @@ CREATE TABLE IF NOT EXISTS missions (
 	id SERIAL PRIMARY KEY,
 	lobby_id INTEGER,
 	leader INTEGER, -- this is the player_number of the person who chose the mission
-	current_round INTEGER, -- 
+	mission INTEGER, -- 
 	total_votes INTEGER, -- or derive this from current_round?
 	choice_one INTEGER,
 	choice_two INTEGER,

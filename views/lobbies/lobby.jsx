@@ -17,14 +17,20 @@ class Lobby extends React.Component {
 					<div className="card p-3 my-2 shadow-sm" id='gameBoard'>
 						<h2 id='gameStatus' />
 						<p id="phaseLine" />
+						<ul id="choiceUl" />
 						
 						<form method="POST" action={'/lobbies/' + lobby.id + '/start?_method=PUT'} id='startButton' className='d-none'>
 							<input type="hidden" name="lobby_id" value={lobby.id} />
 							<input type="submit" value="Start Game" className ="btn btn-lg btn-primary" />
 						</form>
 
-						<form method ="POST" action={'/lobbies/' + lobby.id + '/choose?_method=PUT'} id='chooseForm' className='d-none'>
+						<form method="POST" action={'/lobbies/' + lobby.id + '/choose?_method=PUT'} id='chooseForm' className='d-none'>
 						</form>
+
+						<form method='POST' action="#" className='d-none' id='voteForm'>
+						<button type="submit" className="btn btn-success mx-1">Yes</button>
+						<button type="submit" className="btn btn-danger mx-1">No</button>
+						</form> 
 
 					</div>
 					<div className="card p-3 my-2 shadow-sm" id = 'dashboard'>

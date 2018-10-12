@@ -11,9 +11,9 @@ module.exports = (db, io) => {
 			} else {
 
 				let queryString = {
-					lobby_id: request.params.id,
+					id: request.params.id,
 					leader: request.body.leader,
-					current_round: request.body.mission_number,
+					mission: request.body.mission_number,
 					choice_one: request.body.choiceOne,
 					choice_two: request.body.choiceTwo,
 					choice_three: request.body.choiceThree
@@ -95,6 +95,30 @@ module.exports = (db, io) => {
 				}
 			})	
 		},
+
+		votingPhase: (request, response) => {
+
+			db.game.getMission(request.params, (error, queryResult) => {
+				if (error) {
+					console.error('Error starting game.', error);
+					response.sendStatus(500);
+				} else {
+
+					console.log(queryResult.rows);
+
+					response.send(queryResult.rows[0]);
+				}
+			})
+		}
+
+
+
+
+
+
+
+
+
 
 
 	}

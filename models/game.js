@@ -34,8 +34,8 @@ module.exports = (pool) => {
 
 		getMission: (query, callback) => {
 
-			const queryString = 'SELECT * FROM missions WHERE lobby_id = $1 AND current_round = $2;';
-			const values = [query.lobby_id, query.current_round];
+			const queryString = 'SELECT * FROM missions WHERE lobby_id = $1 AND mission = $2;';
+			const values = [query.id, query.mission];
 
 			pool.query(queryString, values, (error, queryResult) => {
 				callback(error, queryResult);
@@ -44,8 +44,8 @@ module.exports = (pool) => {
 
 		createMission: (query, callback) => {
 
-			const queryString = 'INSERT INTO missions (lobby_id, leader, current_round, choice_one, choice_two, choice_three) VALUES ($1, $2, $3, $4, $5, $6) RETURNING id;';
-			const values = [query.lobby_id, query.leader, query.current_round, query.choice_one, query.choice_two, query.choice_three];
+			const queryString = 'INSERT INTO missions (lobby_id, leader, mission, choice_one, choice_two, choice_three) VALUES ($1, $2, $3, $4, $5, $6) RETURNING id;';
+			const values = [query.id, query.leader, query.mission, query.choice_one, query.choice_two, query.choice_three];
 
 			pool.query(queryString, values, (error, queryResult) => {
 				callback(error, queryResult);
@@ -54,7 +54,8 @@ module.exports = (pool) => {
 
 		updateMission: (query, callback) => {
 
-			const queryString = 'UPDATE missions SET leader = $2, choice_one = $4, choice_two = $5, choice_three = $6 WHERE lobby_id = $1 AND current_round = $6;';
+			const queryString = 'UPDATE missions SET leader = $2, choice_one = $4, choice_two = $5, choice_three = $6 WHERE lobby_id = $1 AND mission = $6;';
+			const values = [query.id, query.leader, query.mission, query.choice_one, query.choice_two, query.choice_three];
 
 			pool.query(queryString, values, (error, queryResult) => {
 				callback(error, queryResult);

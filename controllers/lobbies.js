@@ -101,7 +101,7 @@ module.exports = (db, io) => {
 											} else {
 
 												// joins the lobby, reloads everyone's player list
-												io.emit('updateGame');
+												io.emit('updateGame', request.params);
 
 												response.render('lobbies/lobby', {cookies:cookies, lobby: lobby});
 											}

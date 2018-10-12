@@ -78,7 +78,7 @@ module.exports = (db, io) => {
 								// enters if the user is one of the players in the game
 								if (playerInGame) {
 
-									response.render('lobbies/lobby', {cookies:cookies, lobby: lobby, players: players});
+									response.render('lobbies/lobby', {cookies:cookies, lobby: lobby});
 								} else {
 
 									if (players.length >= 5) {
@@ -100,18 +100,10 @@ module.exports = (db, io) => {
 												response.send('Error joining lobby.');
 											} else {
 
-												io.emit('refresh');
-
-												// gets players again with the player who just joined
-												db.lobbies.getPlayers(lobby, (error, queryResult) => {
-													if (error) {
-														console.error('Error getting players in lobby:', error);
-														response.sendStatus(500);
-													} else {
-
-															response.render('lobbies/lobby', {cookies:cookies, lobby: lobby, players: queryResult.rows});
-														}
-												})
+												// joins the lobby, reloads everyone's player list
+												io.emit('reloadPlayers');
+												
+												response.render('lobbies/lobby', {cookies:cookies, lobby: lobby});
 											}
 										})
 									}
@@ -121,6 +113,22 @@ module.exports = (db, io) => {
 					}
 				})
 			}
+		},
+
+		getPlayers: (request, response) => {
+
+			console.log(request.params);
+
+			db.lobbies.getPlayers(request.params, (error, queryResult) => {
+				if (error) {
+					console.error('Error getting players in lobby:', error);
+					response.sendStatus(500);
+
+				} else {
+
+					response.send(queryResult.rows);
+				}
+			})
 		},
 		
 

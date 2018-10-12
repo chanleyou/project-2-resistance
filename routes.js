@@ -8,7 +8,14 @@ module.exports = (app, db, io) => {
 	const game = require('./controllers/game')(db, io);
 
 	app.put('/lobbies/:id/start', game.startGame);
-
+	
+	app.get('/lobbies/:id/getPlayers', lobbies.getPlayers);
+	
+	app.post('/lobbies', lobbies.create);
+	
+	app.get('/lobbies/:id', lobbies.enter);
+	app.get('/lobbies/', lobbies.index);
+	
 	app.get('/users/new', users.newForm);
 	app.post('/users', users.create);
 
@@ -16,14 +23,7 @@ module.exports = (app, db, io) => {
 	app.post('/users/login', users.loginPost);
 	app.post('/users/logout', users.logout);
 
-	app.post('/lobbies', lobbies.create);
-
-	app.get('/lobbies/:id', lobbies.enter);
-	app.get('/lobbies/', lobbies.index);
-
-
 	app.get('/', (request, response) => {
-
 		response.redirect('/lobbies/');		
 	})
 }

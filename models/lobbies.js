@@ -22,7 +22,7 @@ module.exports = (pool) => {
 
 		create: (query, callback) => {
 
-			const queryString = 'INSERT INTO lobbies (name, host_id, round, player_count) VALUES ($1, $2, $3, $4) RETURNING *';
+			const queryString = 'INSERT INTO lobbies (name, host_id, mission, player_count) VALUES ($1, $2, $3, $4) RETURNING *';
 			const values = [query.name, query.host_id, 0, 1];
 
 			pool.query(queryString, values, (error, queryResult) => {
@@ -34,6 +34,16 @@ module.exports = (pool) => {
 
 			const queryString = 'INSERT INTO players_in_lobby (lobby_id, user_id, player_number) VALUES ($1, $2, $3);';
 			const values = [query.lobby_id, query.user_id, query.player_number];
+
+			pool.query(queryString, values, (error, queryResult) => {
+				callback(error, queryResult);
+			})
+		},
+
+		addPlayerCount: (query, callback) => {
+
+			const queryString = 'UPDATE lobbies SET player_count = $1 WHERE lobby_id = $2;';
+			values = [query.player_number, query.lobby_id];
 
 			pool.query(queryString, values, (error, queryResult) => {
 				callback(error, queryResult);

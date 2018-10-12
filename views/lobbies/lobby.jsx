@@ -5,8 +5,6 @@ var Chat = require('../layout/chat');
 class Lobby extends React.Component {
 	render () {
 
-		console.log('PROPS: ', this.props);
-
 		const lobby = this.props.lobby;
 
 		return (
@@ -16,11 +14,21 @@ class Lobby extends React.Component {
 				</div>
 
 				<div className="col-12 col-lg-10">
-					<div className="card p-3 my-2 shadow-sm">
-						<h1 id='gameStatus' />
+					<div className="card p-3 my-2 shadow-sm" id='gameBoard'>
+						<h2 id='gameStatus' />
+						<p id="phaseLine" />
+						
+						<form method="POST" action={'/lobbies/' + lobby.id + '/start?_method=PUT'} id='startButton' className='d-none'>
+							<input type="hidden" name="lobby_id" value={lobby.id} />
+							<input type="submit" value="Start Game" className ="btn btn-lg btn-primary" />
+						</form>
+
+						<form method ="POST" action={'/lobbies/' + lobby.id + '/choose?_method=PUT'} id='chooseForm' className='d-none'>
+						</form>
+
 					</div>
-					<div className="card p-3 my-2 shadow-sm">
-						<h4>Dashboard here!</h4>
+					<div className="card p-3 my-2 shadow-sm" id = 'dashboard'>
+						<p id='playerLine' className='my-0'/>
 					</div>
 				</div>
 

@@ -40,15 +40,13 @@ io.on('connection', (socket) => {
     console.log('User logging in with cookie authentication error!');
   }
   
-  socket.on('chat', (message) => {
+  socket.on('chat', (lobby, message) => {
 
     if (cookies.loggedin === sha256(cookies.userid + cookies.username + SALT)) {
 
       console.log(`Message by ${cookies.username}: ${message}`);
-      io.emit('chat', cookies.username, message);
-    } else {
-      io.emit('chat', 'Server', 'Cookie authentication error!');
-    }
+      io.emit('chat', lobby, cookies.username, message);
+    } 
   })
 
   socket.on('disconnect', () => {

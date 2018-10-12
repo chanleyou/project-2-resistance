@@ -101,8 +101,8 @@ module.exports = (db, io) => {
 											} else {
 
 												// joins the lobby, reloads everyone's player list
-												io.emit('reloadPlayers');
-												
+												io.emit('updateGame');
+
 												response.render('lobbies/lobby', {cookies:cookies, lobby: lobby});
 											}
 										})
@@ -138,7 +138,7 @@ module.exports = (db, io) => {
 
 				} else {
 
-					response.send(queryResult.rows);
+					response.send(queryResult.rows[0]);
 				}
 			})
 		},

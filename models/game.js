@@ -6,7 +6,7 @@ module.exports = (pool) => {
 		
 			let rng = Math.floor(Math.random()*5 + 1);
 		
-			const queryString = 'UPDATE lobbies SET round = 1, current_player = $1  WHERE id = $2 RETURNING *;';
+			const queryString = 'UPDATE lobbies SET mission = 1, phase = 1, current_player = $1  WHERE id = $2 RETURNING *;';
 		
 			const values = [rng, query.id];
 		
@@ -31,6 +31,53 @@ module.exports = (pool) => {
 				callback(error, queryResult);
 			})
 		},
+
+		getMission: (query, callback) => {
+
+			const queryString = 'SELECT * FROM missions WHERE lobby_id = $1 AND current_round = $2;';
+			const values = [query.lobby_id, query.current_round];
+
+			pool.query(queryString, values, (error, queryResult) => {
+				callback(error, queryResult);
+			})
+		},
+
+		createMission: (query, callback) => {
+
+			const queryString = 'INSERT INTO missions (lobby_id, leader, current_round, choice_one, choice_two, choice_three) VALUES ($1, $2, $3, $4, $5, $6) RETURNING id;';
+			const values = [query.lobby_id, query.leader, query.current_round, query.choice_one, query.choice_two, query.choice_three];
+
+			pool.query(queryString, values, (error, queryResult) => {
+				callback(error, queryResult);
+			})
+		},
+
+		updateMission: (query, callback) => {
+
+			const queryString = 'UPDATE missions SET leader = $2, choice_one = $4, choice_two = $5, choice_three = $6 WHERE lobby_id = $1 AND current_round = $6;';
+
+			pool.query(queryString, values, (error, queryResult) => {
+				callback(error, queryResult);
+			})
+		},
+
+		votingPhase: (query, callback) => {
+				
+			const queryString = 'UPDATE lobbies SET phase = 2 WHERE id = $1 RETURNING *;';
+		
+			const values = [query.id];
+		
+			pool.query(queryString, values, (error, queryResult) => {
+				callback(error, queryResult);
+			})
+		},
+
+
+
+
+
+
+
 
 	}
 }

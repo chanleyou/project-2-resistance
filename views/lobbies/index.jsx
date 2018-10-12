@@ -13,7 +13,7 @@ class CreateGame extends React.Component {
 		if (cookies.loggedin === sha256(cookies.userid + cookies.username + SALT)) {
 			return (
 				<form className ="form-inline my-2" method="POST" action="/lobbies">
-					<input type="text" name="name" placeholder="Lobby Name" required autoComplete="off" />
+					<input type="text" name="name" placeholder="Lobby Name" required autoComplete="off" className="form-control"/>
 					<input type="hidden" name="host_id" value={cookies.userid} />
 					<input type="submit" value="Create" className ="btn btn-success ml-1" />
 				</form>
@@ -52,10 +52,10 @@ class Index extends React.Component {
 			return (
 				<div key={lobby.id} className="col-12">
 					<div className="card p-3 my-2 shadow-sm">
-						<p>Lobby ID: {lobby.id}</p>
-						<p>Name: {lobby.name}</p>
-						<p>Host: {lobby.host_name}</p>
-						<p>Players: {lobby.player_count}/5 -- obselete -- REPLACE WITH players_in_lobby.rowCount</p>
+						<p className ="my-1">Lobby ID: {lobby.id}</p>
+						<p className ="my-1">Name: {lobby.name}</p>
+						<p className ="my-1">Host: {lobby.host_name}</p>
+						<p className ="mt-1 mb-3">Players: {lobby.player_count}/5</p>
 						<JoinGame cookies={this.props.cookies} lobby={lobby} />
 					</div>
 				</div>

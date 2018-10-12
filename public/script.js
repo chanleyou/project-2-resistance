@@ -16,7 +16,6 @@ parseCookie = (cookieString) => {
 //to get who this player is
 let cookies = parseCookie(document.cookie);
 
-
 chatForm.addEventListener('submit', (event) => {
 
 	event.preventDefault();

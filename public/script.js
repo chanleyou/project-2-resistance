@@ -13,7 +13,7 @@ const parseCookie = (cookieString) => {
 	return output;
 }
 
-const updateScores = (lobby) => {
+const updateScores = (lobby, thisPlayer) => {
 
 	let request = new XMLHttpRequest();
 
@@ -25,6 +25,9 @@ const updateScores = (lobby) => {
 			scoreboard.removeChild(scoreboard.firstChild);
 		}
 
+		let rtPts = 0;
+		let spPts = 0;
+
 		for (let i in points) {
 			let point = document.createElement('div');
 			scoreboard.appendChild(point);
@@ -33,12 +36,31 @@ const updateScores = (lobby) => {
 			if (points[i].success) {
 				point.textContent = `Mission ${points[i].mission} -- Success`;
 				point.classList.add('bg-success', 'text-white');
+
+				rtPts++;
 			} else {
 				point.textContent = `Mission ${points[i].mission} -- Failure (${points[i].fail_votes})`;
 				point.classList.add('bg-danger', 'text-white');
+
+				spPts++;
+			}	
+		}
+
+		if (rtPts >= 3) { 
+			gameStatus.textContent = "The Resistance has won!";
+			if (thisPlayer.role === 'Resistance') {
+				phaseLine.textContent = "Good job!";
+			} else {
+				phaseLine.textContent = "Better luck next time...";
+			}
+		} else if (spPts >= 3) {
+			gameStatus.textContent = "The Spies have won!";
+			if (thisPlayer.role === 'Sp	ies') {
+				phaseLine.textContent = "Good job!";
+			} else {
+				phaseLine.textContent = "Better luck next time...";
 			}
 		}
-		
 	})
 
 	request.open("GET", `/lobbies/${lobby.id}/points`);
@@ -104,45 +126,46 @@ const choosePlayerForm = (lobby, players) => {
 const gameLogic = (cookies, lobby, players, 
 	mission, votes, outcomes) => {
 
-	updateScores(lobby);
-
-	let thisPlayer = {};
-	
-	// player array where player_number = index of array, makes listing players easier
-	let playerList = [null];
-
-	for (let i in players) {
-
-		playerList.push(players[i]);
-
-		if (cookies.userid == players[i].user_id) {
-			thisPlayer = players[i];
-		}
-	}
-
-	let fellowSpy = {};
-
-	if (thisPlayer.role === 'Spies') {
+		
+		let thisPlayer = {};
+		
+		// player array where player_number = index of array, makes listing players easier
+		let playerList = [null];
+		
 		for (let i in players) {
-			if (players[i].role === 'Spies' && players[i].user_id !== thisPlayer.user_id) {
-				fellowSpy = players[i];
+			
+			playerList.push(players[i]);
+			
+			if (cookies.userid == players[i].user_id) {
+				thisPlayer = players[i];
+			}
+		}
+
+		updateScores(lobby, thisPlayer);
+		
+		let fellowSpy = {};
+		
+		if (thisPlayer.role === 'Spies') {
+			for (let i in players) {
+				if (players[i].role === 'Spies' && players[i].user_id !== thisPlayer.user_id) {
+					fellowSpy = players[i];
+					break;
+				}
+			}
+		}
+		
+		let currentPlayer = {};
+		
+		for (let i in players) {
+			if (lobby.current_player === players[i].player_number) {
+				currentPlayer = players[i];
 				break;
 			}
 		}
-	}
-
-	let currentPlayer = {};
-
-	for (let i in players) {
-		if (lobby.current_player === players[i].player_number) {
-			currentPlayer = players[i];
-			break;
-		}
-	}
-
-	// reset stuff
-	while (listPlayers.firstChild) {
-		listPlayers.removeChild(listPlayers.firstChild);
+		
+		// reset stuff
+		while (listPlayers.firstChild) {
+			listPlayers.removeChild(listPlayers.firstChild);
 	}
 
 	while (choiceUl.firstChild) {
@@ -162,7 +185,7 @@ const gameLogic = (cookies, lobby, players,
 			playerTag.classList.add('font-weight-bold');
 		}
 
-		if ((thisPlayer.role === 'Spies' && players[i].role === 'Spies') || lobby.mission === 6) {
+		if (players[i].role === 'Spies' && (thisPlayer.role === 'Spies' || lobby.mission === 6)) {
 			playerTag.classList.add('font-italic');
 		}
 
@@ -222,8 +245,6 @@ const gameLogic = (cookies, lobby, players,
 		}
 
 	} else if (lobby.mission === 6) {
-
-		gameStatus.textContent = "GAME OVER TEXT."; // fill this in
 	
 	} else { // if mission = 1 to 5
 

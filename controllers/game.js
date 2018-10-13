@@ -302,22 +302,29 @@ module.exports = (db, io) => {
 														}
 													}
 
-													if (resistancePts >= 3) {
+													if (resistancePts >= 3 || spiesPts >= 3) {
 
 														response.send('RESISTANCE WIN');
 
-														/// RESISTANCE WIN LOGIC
+														db.game.over(request.params, (error, queryResult) => {
+															if (error) {
+																console.error('Error ending game.');
+																response.sendStatus(500);
+															} else {
 
-													} else if (spiesPts >= 3) {
-
-														response.send('SPIES WIN');
-													
-														// SPIES WIN LOGIC
+																io.emit('updateGame', queryString);
+																response.redirect("/lobbies/" + request.params.id);
+															}
+														})
 													
 													} else {
 
 														let newMission = request.params.mission - -1; // fuck javascript loose typing
 														let newPlayer = request.body.current_player - -1;
+
+														if (newPlayer === 6) {
+															newPlayer = 1;
+														}
 
 														let queryString = {
 															id: request.params.id,

@@ -182,6 +182,16 @@ module.exports = (pool) => {
 			})
 		},
 
+		over: (query, callback) => {
+
+			const queryString = 'UPDATE lobbies SET mission = 6 WHERE id = $1;';
+			const values = [query.id];
+
+			pool.query(queryString, values, (error, queryResult) => {
+				callback(error, queryResult);
+			})
+		}
+
 		
 
 

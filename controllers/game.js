@@ -224,6 +224,163 @@ module.exports = (db, io) => {
 			})
 		},
 
+		mission: (request, response) => {
+
+			let queryString = {
+				id: request.params.id,
+				mission: request.params.mission,
+				player_number: request.body.player_number,
+				vote: request.body.vote
+			}
+
+			db.game.goOnMission(queryString, (error, queryResult) => {
+				if (error) {
+					console.error ('Error on mission.');
+					response.sendStatus(500);
+				
+				} else {
+
+					db.game.getOutcomes(request.params, (error, queryResult) => {
+						if (error) {
+							console.error ('Error on mission.');
+							response.sendStatus(500);
+
+						} else {
+
+							console.log(queryResult.rowCount);
+							console.log(queryResult.rows);
+							console.log(queryString.mission);
+			
+							if (
+								(queryResult.rowCount === 2 && (queryString.mission ==  1 || queryString.mission == 3 || queryString.mission == 4))
+								||
+								(queryResult.rowCount === 3 && (queryString.mission == 2 || queryString.mission == 5))
+								) {
+
+									console.log('VOTES TALLIED.');
+
+									let failVotes = 0;
+
+									for (let i in queryResult.rows) {
+										if (queryResult.rows[i].vote == false) {
+											failVotes++;
+										}
+									}
+
+									let queryString = {
+										id: request.params.id,
+										mission: request.params.mission,
+										fail_votes: failVotes
+									}
+
+									if (failVotes > 0) {
+										queryString['success'] = false;
+									} else {
+										queryString['success'] = true;
+									}
+
+									db.game.givePoints(queryString, (error, queryResult) => {
+										if (error) {
+											console.error('Error giving points.', error);
+											response.sendStatus(500);
+										} else {
+
+											db.game.checkWin(request.params, (error, queryResult) => {
+												if (error) {
+													console.error('Error checking win.', error);
+													response.sendStatus(500);
+												} else {
+
+													let resistancePts = 0;
+													let spiesPts = 0;
+
+													for (let i in queryResult.rows) {
+														if (queryResult.rows[i].success) {
+															resistancePts ++;
+														} else {
+															spiesPts ++;
+														}
+													}
+
+													if (resistancePts >= 3) {
+
+														response.send('RESISTANCE WIN');
+
+														/// RESISTANCE WIN LOGIC
+
+													} else if (spiesPts >= 3) {
+
+														response.send('SPIES WIN');
+													
+														// SPIES WIN LOGIC
+													
+													} else {
+
+														let newMission = request.params.mission - -1; // fuck javascript loose typing
+														let newPlayer = request.body.current_player - -1;
+
+														let queryString = {
+															id: request.params.id,
+															mission: newMission,
+															current_player: newPlayer
+														}
+			
+														db.game.nextMission(queryString, (error, queryResult) => {
+															if (error) {
+																console.error('Error going to next mission.', error);
+																response.sendStatus(500);
+															} else {
+
+																io.emit('updateGame', queryString);
+																response.redirect("/lobbies/" + request.params.id);
+															}
+														})
+													}
+												}
+											})
+
+										}
+
+									})
+
+							} else {
+
+								console.log('NOT FIRING');
+
+								response.redirect("/lobbies/" + request.params.id);
+							}
+						} 
+					})
+				}
+			})
+		},
+
+		getOutcomes: (request, response) => {
+
+			db.game.getOutcomes(request.params, (error, queryResult) => {
+				if (error) {
+					console.error('Error getting votes.', error);
+					response.sendStatus(500);
+				} else {
+
+					response.send(queryResult.rows);
+				}
+			})
+		},
+		
+		getPoints: (request, response) => {
+
+			db.game.checkWin(request.params, (error, queryResult) => {
+				if (error) {
+					console.error('Error getting votes.', error);
+					response.sendStatus(500);
+				} else {
+
+					response.send(queryResult.rows);
+				}
+			})
+		}, 
+
 
 
 

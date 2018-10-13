@@ -41,7 +41,6 @@ CREATE TABLE IF NOT EXISTS missions (
 	lobby_id INTEGER,
 	leader INTEGER, -- this is the player_number of the person who chose the mission
 	mission INTEGER, -- 
-	total_votes INTEGER, -- or derive this from current_round?
 	choice_one INTEGER,
 	choice_two INTEGER,
 	choice_three INTEGER -- all from 1-5, referencing player_number
@@ -58,26 +57,24 @@ CREATE TABLE IF NOT EXISTS votes (
 	vote BOOLEAN
 );
 
-DROP TABLE IF EXISTS mission_success;
+DROP TABLE IF EXISTS outcomes;
 
-CREATE TABLE IF NOT EXISTS mission_success (
+CREATE TABLE IF NOT EXISTS outcomes (
 	id SERIAL PRIMARY KEY,
-	mission_id INTEGER,
+	lobby_id INTEGER,
+	mission INTEGER,
 	player_number INTEGER,
 	vote BOOLEAN	
 );
 
-DROP TABLE IF EXISTS mission_outcome;
+DROP TABLE IF EXISTS points;
 
--- is this necessary? for tracking previous games in user interface
-CREATE TABLE IF NOT EXISTS mission_outcome (
+CREATE TABLE IF NOT EXISTS points (
 	id SERIAL PRIMARY KEY,
 	lobby_id INTEGER,
-	mission_id INTEGER,
-	round INTEGER,
-	outcome BOOLEAN,
-	total_votes INTEGER,
-	votes_no INTEGER
+	mission INTEGER,
+	success BOOLEAN,
+	fail_votes INTEGER
 );
 
 DROP TABLE IF EXISTS lobby_chat;

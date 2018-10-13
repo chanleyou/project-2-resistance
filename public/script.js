@@ -13,6 +13,38 @@ const parseCookie = (cookieString) => {
 	return output;
 }
 
+const updateScores = (lobby) => {
+
+	let request = new XMLHttpRequest();
+
+	request.addEventListener("load", function () {
+
+		let points = JSON.parse(this.responseText);
+
+		while (scoreboard.firstChild) {
+			scoreboard.removeChild(scoreboard.firstChild);
+		}
+
+		for (let i in points) {
+			let point = document.createElement('div');
+			scoreboard.appendChild(point);
+			point.classList.add('card', 'p-1', 'm-1');
+			
+			if (points[i].success) {
+				point.textContent = `Mission ${points[i].mission} -- Success`;
+				point.classList.add('bg-success', 'text-white');
+			} else {
+				point.textContent = `Mission ${points[i].mission} -- Failure (${points[i].fail_votes})`;
+				point.classList.add('bg-danger', 'text-white');
+			}
+		}
+		
+	})
+
+	request.open("GET", `/lobbies/${lobby.id}/points`);
+	request.send();
+}
+
 const choosePlayerForm = (lobby, players) => {
 
 	let chooseForm = document.querySelector('#chooseForm');
@@ -69,11 +101,14 @@ const choosePlayerForm = (lobby, players) => {
 
 // central function that decides what to show 
 // called upon by updateGame
-const gameLogic = (cookies,lobby, players, mission, votes) => {
+const gameLogic = (cookies, lobby, players, 
+	mission, votes, outcomes) => {
+
+	updateScores(lobby);
 
 	let thisPlayer = {};
 	
-	// new player array where player_number matches index of array
+	// player array where player_number = index of array, makes listing players easier
 	let playerList = [null];
 
 	for (let i in players) {
@@ -138,22 +173,25 @@ const gameLogic = (cookies,lobby, players, mission, votes) => {
 	// update player choices
 	let choices = [];
 
-			for (let i in players) {
-				if (players[i].player_number === mission.choice_one) {
-					 choices.push(players[i]);
-				} else if (players[i].player_number === mission.choice_two) {
-					choices.push(players[i]);
-				} else if (players[i].player_number === mission.choice_three) {
-					choices.push(players[i]);
-				}
-			}
+	if (mission) {
 
-			for (let i in choices) {
-				list = document.createElement('li');
-				list.textContent = `${choices[i].player_number} ${choices[i].name}`;
-				choiceUl.appendChild(list);
+		for (let i in players) {
+			if (players[i].player_number === mission.choice_one) {
+					choices.push(players[i]);
+			} else if (players[i].player_number === mission.choice_two) {
+				choices.push(players[i]);
+			} else if (players[i].player_number === mission.choice_three) {
+				choices.push(players[i]);
 			}
-
+		}
+	
+		for (let i in choices) {
+			list = document.createElement('li');
+			list.textContent = `${choices[i].player_number} ${choices[i].name}`;
+			choiceUl.appendChild(list);
+		}
+	}
+	
 	// playerLine controller
 	if (lobby.mission === 0) {
 		playerLine.textContent = "Waiting for game to start...";
@@ -258,13 +296,47 @@ const gameLogic = (cookies,lobby, players, mission, votes) => {
 			}
 		} else if (lobby.phase === 3) {
 
-			console.log(mission);
-
 			choiceUl.classList.remove('d-none');
 
 			if (thisPlayer.player_number === mission.choice_one || thisPlayer.player_number === mission.choice_two || thisPlayer.player_number === mission.choice_three) {
 
-				phaseLine.textContent = 'You have been selected for the mission:'
+				let doneMission = false;
+				let yourOutcome;
+
+				for (let i in outcomes) {
+					if (outcomes[i].player_number === thisPlayer.player_number) {
+						yourOutcome = outcomes[i];
+						doneMission = true;
+						break;
+					}	
+				}
+				
+				if (doneMission) {
+
+					if (yourOutcome.vote) {
+						phaseLine.textContent = 'You voted for this mission to succeed.';
+					} else {
+						phaseLine.textContent = 'You sabotaged this mission.';
+					}
+
+				} else {
+
+					missionForm.classList.remove('d-none');
+					missionForm.action = `/lobbies/${lobby.id}/${lobby.mission}/mission`;
+					missionFormId.value = thisPlayer.player_number;
+					missionFormcurrent.value = lobby.current_player;
+	
+	
+					missionForm.addEventListener('submit', () => {
+						missionForm.classList.add('d-none');
+					})
+
+					if (thisPlayer.role === 'Resistance') {
+						failButton.disabled = 'true';
+					}
+					
+					phaseLine.textContent = 'What will you do for the mission?'
+				}
 
 			} else {
 
@@ -304,8 +376,18 @@ const updateGame = (lobby, cookies) => {
 					request.addEventListener('load', function () {
 
 						let votes = JSON.parse(this.responseText);
-						
-						gameLogic(cookies, lobby, players, mission, votes);
+
+						let request = new XMLHttpRequest();
+
+						request.addEventListener('load', function () {
+
+							let outcomes = JSON.parse(this.responseText);
+
+							gameLogic(cookies, lobby, players, mission, votes, outcomes);
+						})
+
+						request.open('GET', `/lobbies/${lobby.id}/${lobby.mission}/outcomes`);
+						request.send();
 					})
 					
 					request.open('GET', `/lobbies/${lobby.id}/${lobby.mission}/votes`);
@@ -369,8 +451,13 @@ window.onload = () => {
 	// socket updates game
 	socket.on('updateGame', (lobbyFrom) => {
 		if (lobbyFrom.id === lobby.id) {
-
 			updateGame(lobby, cookies);
 		} 
+	})
+
+	socket.on('updateScores', (lobbyFrom) => {
+		if (lobbyFrom.id === lobby.id) {
+			updateScores(lobby);
+		}
 	})
 }

@@ -132,6 +132,56 @@ module.exports = (pool) => {
 			})
 		},
 
+		goOnMission: (query, callback) => {
+
+			const queryString = 'INSERT INTO outcomes (lobby_id, mission, player_number, vote) VALUES ($1, $2, $3, $4);';
+			const values = [query.id, query.mission, query.player_number, query.vote];
+
+			pool.query(queryString, values, (error, queryResult) => {
+				callback(error, queryResult);
+			})
+		},
+
+		getOutcomes: (query, callback) => {
+
+			const queryString = 'SELECT * FROM outcomes WHERE lobby_id = $1 AND mission = $2;';
+			const values = [query.id, query.mission];
+
+			pool.query(queryString, values, (error, queryResult) => {
+				callback(error, queryResult);
+			})
+		},
+
+		givePoints: (query, callback) => {
+
+			const queryString = 'INSERT INTO points (lobby_id, mission, success, fail_votes) VALUES ($1, $2, $3, $4);';
+			const values = [query.id, query.mission, query.success, query.fail_votes];
+
+			pool.query(queryString, values, (error, queryResult) => {
+				callback(error, queryResult);
+			})
+		},
+
+		checkWin: (query, callback) => {
+
+			const queryString = 'SELECT * FROM points WHERE lobby_id = $1 ORDER BY mission ASC;';
+			const values = [query.id];
+
+			pool.query(queryString, values, (error, queryResult) => {
+				callback(error, queryResult);
+			})
+		},
+
+		nextMission: (query, callback) => {
+
+			const queryString = 'UPDATE lobbies SET mission = $1, phase = 1, current_player = $2 WHERE id = $3;';
+			const values = [query.mission, query.current_player, query.id];
+
+			pool.query(queryString, values, (error, queryResult) => {
+				callback(error, queryResult);
+			})
+		},
+
 		
 
 

@@ -13,7 +13,7 @@ module.exports = (pool) => {
 
 		index: (callback) => {
 
-			const queryString = 'SELECT lobbies.id, lobbies.name, users.name AS host_name, lobbies.name AS lobby_name, lobbies.player_count FROM lobbies INNER JOIN users ON (users.id = lobbies.host_id) WHERE lobbies.player_count < 5 ORDER BY id ASC;';
+			const queryString = 'SELECT lobbies.id, lobbies.name, users.name AS host_name, lobbies.name AS lobby_name, lobbies.player_count FROM lobbies INNER JOIN users ON (users.id = lobbies.host_id) ORDER BY id ASC;';
 
 			pool.query(queryString, (error, queryResult) => {
 				callback(error, queryResult);

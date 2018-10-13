@@ -29,14 +29,22 @@ class Lobby extends React.Component {
 						</form>
 
 						<form method='POST' className='d-none' id='voteForm'>
-						<input type='hidden' name='player_number' id='voteFormId' />
-						<button type="submit" name="vote" className="btn btn-success mx-1" value="true">Yes</button>
-						<button type="submit" name="vote" className="btn btn-danger mx-1" value="false">No</button>
+							<input type='hidden' name='player_number' id='voteFormId' />
+							<button type="submit" name="vote" className="btn btn-primary mx-1" value="true">Yes</button>
+							<button type="submit" name="vote" className="btn btn-warning mx-1" value="false">No</button>
 						</form> 
+
+						<form method='POST' className = 'd-none' id = 'missionForm'>
+							<input type='hidden' name='player_number' id='missionFormId' />
+							<input type='hidden' name='current_player' id='missionFormcurrent' />
+							<button type="submit" name="vote" className="btn btn-success mx-1" value="true">Success</button>
+							<button type="submit" name="vote" className="btn btn-danger mx-1" value="false" id='failButton'>Fail</button>
+						</form>
 
 					</div>
 					<div className="card p-3 my-2 shadow-sm" id = 'dashboard'>
 						<p id='playerLine' className='my-0'/>
+						<div id='scoreboard' />
 					</div>
 				</div>
 

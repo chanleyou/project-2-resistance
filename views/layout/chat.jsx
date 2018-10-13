@@ -13,8 +13,8 @@ class Chat extends React.Component {
 					<div id="chatArea" className="mt-1 mb-3">
 					</div>
 					<form id="chatForm" className="form-inline">
-						<input type="text" id="chatField" className="form-control w-75" autoComplete="off" />
-						<input type="submit" id="chatSubmit" className="btn btn-secondary ml-1" value ="Chat" />
+						<input type="text" id="chatField" className="form-control col" autoComplete="off" />
+						<input type="submit" id="chatSubmit" className="btn btn-secondary ml-1 col-2 col-lg-1" value ="Chat" />
 					</form>
 				</div>
 				<script src="/socket.io/socket.io.js" />	

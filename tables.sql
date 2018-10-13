@@ -48,12 +48,13 @@ CREATE TABLE IF NOT EXISTS missions (
 	--  choice_three is used if current_round is 2 or 5
 );
 
-DROP TABLE IF EXISTS mission_proceed;
+DROP TABLE IF EXISTS votes;
 
-CREATE TABLE IF NOT EXISTS mission_proceed (
+CREATE TABLE IF NOT EXISTS votes (
 	id SERIAL PRIMARY KEY,
-	mission_id INTEGER,
-	player_id INTEGER,
+	lobby_id INTEGER,
+	mission INTEGER,
+	player_number INTEGER,
 	vote BOOLEAN
 );
 

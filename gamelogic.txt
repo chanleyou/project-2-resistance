@@ -1,3 +1,10 @@
+TBD:
+
+1. COMPLETE GAME
+make game look better
+persistent chat (disppears everytime player reloads)
+game logs (show who chose what, voted on what, etc)
+
 WHAT DOES LOBBY NEED?
 
 - lobbies WHERE id = #;

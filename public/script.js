@@ -69,17 +69,22 @@ const choosePlayerForm = (lobby, players) => {
 
 // central function that decides what to show 
 // called upon by updateGame
-const gameLogic = (lobby, players, mission, cookies) => {
+const gameLogic = (cookies,lobby, players, mission, votes) => {
 
 	let thisPlayer = {};
 	
+	// new player array where player_number matches index of array
+	let playerList = [null];
+
 	for (let i in players) {
+
+		playerList.push(players[i]);
+
 		if (cookies.userid == players[i].user_id) {
 			thisPlayer = players[i];
-			break;
 		}
 	}
-	
+
 	let fellowSpy = {};
 
 	if (thisPlayer.role === 'Spies') {
@@ -100,9 +105,17 @@ const gameLogic = (lobby, players, mission, cookies) => {
 		}
 	}
 
-	// reset stuff list
+	// reset stuff
 	while (listPlayers.firstChild) {
 		listPlayers.removeChild(listPlayers.firstChild);
+	}
+
+	while (choiceUl.firstChild) {
+		choiceUl.removeChild(choiceUl.firstChild);
+	}
+
+	while (votesUl.firstChild) {
+		votesUl.removeChild(votesUl.firstChild);
 	}
 
 	// update player list
@@ -122,6 +135,25 @@ const gameLogic = (lobby, players, mission, cookies) => {
 		listPlayers.appendChild(playerTag);
 	}
 
+	// update player choices
+	let choices = [];
+
+			for (let i in players) {
+				if (players[i].player_number === mission.choice_one) {
+					 choices.push(players[i]);
+				} else if (players[i].player_number === mission.choice_two) {
+					choices.push(players[i]);
+				} else if (players[i].player_number === mission.choice_three) {
+					choices.push(players[i]);
+				}
+			}
+
+			for (let i in choices) {
+				list = document.createElement('li');
+				list.textContent = `${choices[i].player_number} ${choices[i].name}`;
+				choiceUl.appendChild(list);
+			}
+
 	// playerLine controller
 	if (lobby.mission === 0) {
 		playerLine.textContent = "Waiting for game to start...";
@@ -135,7 +167,7 @@ const gameLogic = (lobby, players, mission, cookies) => {
 		}
 	}
 
-	// title controller
+	// game controller
 	if (lobby.mission === 0 && players.length < 5) {
 		
 		gameStatus.textContent = "Waiting for players...";
@@ -146,16 +178,16 @@ const gameLogic = (lobby, players, mission, cookies) => {
 		
 		if (lobby.host_id == cookies.userid) {
 			startButton.classList.remove('d-none');
-			startButton.addEventListener('click', () => {
+			startButton.addEventListener('submit', () => {
 				startButton.classList.add('d-none');
 			})
 		}
 
 	} else if (lobby.mission === 6) {
 
-		gameStatus.textContent = "GAME OVER TEXT."; 
+		gameStatus.textContent = "GAME OVER TEXT."; // fill this in
 	
-	} else {
+	} else { // if mission = 1 to 5
 
 		gameStatus.textContent = `Mission ${lobby.mission}`;
 
@@ -189,34 +221,59 @@ const gameLogic = (lobby, players, mission, cookies) => {
 			} else {
 				phaseLine.textContent = `${currentPlayer.name} has chosen the following players for this mission:`
 			}
-
 			
-			let choices = [];
+			choiceUl.classList.remove('d-none');
 
-			for (let i in players) {
-				if (players[i].player_number === mission.choice_one) {
-					 choices.push(players[i]);
-				} else if (players[i].player_number === mission.choice_two) {
-					choices.push(players[i]);
-				} else if (players[i].player_number === mission.choice_three) {
-					choices.push(players[i]);
+			let hasPlayerVoted = false;
+
+			for (let i in votes) {
+
+				if (votes[i].player_number === thisPlayer.player_number) {
+					hasPlayerVoted = true;
 				}
-			}
 
-
-			console.log(choices);
-
-			for (let i in choices) {
 				list = document.createElement('li');
-				list.textContent = `${choices[i].player_number} ${choices[i].name}`;
-				choiceUl.appendChild(list);
+
+				let player_number = votes[i].player_number;
+				
+				if (votes[i].vote) {
+					list.textContent = `${votes[i].player_number} ${playerList[player_number].name} voted yes.`; 
+				} else {
+					list.textContent = `${votes[i].player_number} ${playerList[player_number].name} voted no.`;
+				} 
+
+				votesUl.appendChild(list);
 			}
 
-			voteForm.classList.remove('d-none');
-			
-		}
-	}
+			if (hasPlayerVoted === false) {
 
+				voteForm.classList.remove('d-none');
+				voteForm.action = `/lobbies/${lobby.id}/${lobby.mission}/vote`;
+
+				voteFormId.value = thisPlayer.player_number;
+
+				voteForm.addEventListener('submit', () => {
+					voteForm.classList.add('d-none');
+				})
+			}
+		} else if (lobby.phase === 3) {
+
+			console.log(mission);
+
+			choiceUl.classList.remove('d-none');
+
+			if (thisPlayer.player_number === mission.choice_one || thisPlayer.player_number === mission.choice_two || thisPlayer.player_number === mission.choice_three) {
+
+				phaseLine.textContent = 'You have been selected for the mission:'
+
+			} else {
+
+				phaseLine.textContent = "Waiting on mission completion..."
+			}
+		}
+
+
+	}
 }
 
 // 
@@ -238,12 +295,29 @@ const updateGame = (lobby, cookies) => {
 
 			request.addEventListener('load', function () {
 
-			let mission = JSON.parse(this.responseText);
+				if (this.responseText) {
 
-				gameLogic(lobby, players, mission, cookies);
+					let mission = JSON.parse(this.responseText);
+
+					let request = new XMLHttpRequest();
+
+					request.addEventListener('load', function () {
+
+						let votes = JSON.parse(this.responseText);
+						
+						gameLogic(cookies, lobby, players, mission, votes);
+					})
+					
+					request.open('GET', `/lobbies/${lobby.id}/${lobby.mission}/votes`);
+					request.send();
+
+				} else {
+
+					gameLogic(cookies,lobby, players);
+				}
 			})
 
-			request.open("GET", `/lobbies/${lobby.id}/${lobby.mission}/voting`);
+			request.open("GET", `/lobbies/${lobby.id}/${lobby.mission}`);
 			request.send();
 		})
 	
@@ -278,8 +352,6 @@ window.onload = () => {
 
 	// socket receives chat
 	socket.on('chat', (lobbyFrom, username, message) => {
-
-		console.log(lobbyFrom.id);
 
 		if (lobbyFrom.id === lobby.id) {
 

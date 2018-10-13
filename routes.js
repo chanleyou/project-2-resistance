@@ -7,15 +7,17 @@ module.exports = (app, db, io) => {
 	const lobbies = require('./controllers/lobbies')(db, io);
 	const game = require('./controllers/game')(db, io);
 
-
 	// client-side JS routes
 	app.put ('/lobbies/:id/choose', game.choosePhase);
 	app.put('/lobbies/:id/start', game.startGame);
+
+	app.post('/lobbies/:id/:mission/vote', game.vote);
 	
-	app.get('/lobbies/:id/:mission/voting', game.votingPhase);
-	
+	app.get('/lobbies/:id/:mission/votes', game.getVotes);
 	app.get('/lobbies/:id/status', lobbies.getStatus);
+	
 	app.post('/lobbies/:id/getPlayers', lobbies.getPlayers); // this is a post even though it should be a get to avoid cheating as it reveals player roles
+	app.get('/lobbies/:id/:mission', game.getMission);
 	
 	// server-side JS routes (renders)
 	app.post('/lobbies', lobbies.create);

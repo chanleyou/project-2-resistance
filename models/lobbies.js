@@ -52,7 +52,7 @@ module.exports = (pool) => {
 
 		getPlayers: (query, callback) => {
 
-			const queryString = 'SELECT players_in_lobby.player_number, players_in_lobby.role, players_in_lobby.user_id, users.name FROM players_in_lobby INNER JOIN users ON (users.id = players_in_lobby.user_id) WHERE lobby_id = $1 ORDER by players_in_lobby.id ASC;';
+			const queryString = 'SELECT players_in_lobby.player_number, players_in_lobby.role, players_in_lobby.user_id, users.name FROM players_in_lobby INNER JOIN users ON (users.id = players_in_lobby.user_id) WHERE lobby_id = $1 ORDER by players_in_lobby.player_number ASC;';
 			const values = [query.id];
 
 			pool.query(queryString, values, (error, queryResult) => {

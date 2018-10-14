@@ -17,8 +17,6 @@ class Chat extends React.Component {
 						<input type="submit" id="chatSubmit" className="btn btn-secondary ml-1 col-2 col-lg-1" value ="Chat" />
 					</form>
 				</div>
-				<script src="/socket.io/socket.io.js" />	
-				<script src="/script.js" />
 			</div>
 			
 		)

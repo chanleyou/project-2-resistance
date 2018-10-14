@@ -54,6 +54,7 @@ class Layout extends React.Component {
       <html>
         <head>
           <title>{this.props.title}</title>
+					<meta name="viewport" content="width=device-width" />
           <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/css/bootstrap.min.css" />
         </head>
         <body>

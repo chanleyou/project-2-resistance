@@ -161,6 +161,9 @@ const gameLogic = (cookies, lobby, players,	mission, votes, outcomes) => {
 		}
 	}
 
+	choiceUl.classList.add('d-none');
+	votesUl.classList.add('d-none');
+
 	// reset stuff
 	while (listPlayers.firstChild) {
 		listPlayers.removeChild(listPlayers.firstChild);
@@ -214,11 +217,8 @@ const gameLogic = (cookies, lobby, players,	mission, votes, outcomes) => {
 	}
 
 	// playerLine controller
-	if (lobby.mission === 0) {
-		playerLine.textContent = "Waiting for game to start...";
-
-	} else {
-
+	if (lobby.mission !== 0) {
+		
 		if (thisPlayer.role === 'Resistance') {
 			playerLine.textContent = `You are part of the ${thisPlayer.role}.`;
 		} else {
@@ -272,6 +272,9 @@ const gameLogic = (cookies, lobby, players,	mission, votes, outcomes) => {
 			}
 
 		} else if (lobby.phase === 2) {
+
+			choiceUl.classList.remove('d-none');
+			votesUl.classList.remove('d-none');
 
 			if (thisPlayer.player_number === currentPlayer.player_number) {
 				phaseLine.textContent = 'You have chosen the following players for this mission:'

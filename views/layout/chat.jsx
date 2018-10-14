@@ -5,11 +5,9 @@ class Chat extends React.Component {
 
 		return (
 			// fill out the className
-			<div className="col-12"> 
-				<div className="card p-3 shadow-sm">
-					<h4>
-						Chat
-					</h4>
+			<div className="col-12 p-1"> 
+				<div className="card p-3 my-0">
+					<h4>Chat</h4>
 					<div id="chatArea" className="mt-1 mb-3">
 					</div>
 					<form id="chatForm" className="form-inline">

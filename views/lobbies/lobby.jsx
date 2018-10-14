@@ -9,16 +9,16 @@ class Lobby extends React.Component {
 
 		return (
 			<Layout cookies={this.props.cookies} title={'Game ' + lobby.id}>
-				<div className="col-12 my-3">
-					<h1>{lobby.name}</h1>
+				<div className="col-12 p-2 my-0">
+					<h2 className="m-0">{lobby.name}</h2>
 				</div>
 
-				<div className="col-12 col-lg-10">
-					<div className="card p-3 my-2 shadow-sm" id='gameBoard'>
-						<h2 id='gameStatus' />
+				<div className="col-12 col-md-10 p-1">
+					<div className="card p-3 my-0" id='gameBoard'>
+						<h4 id='gameStatus' />
 						<p id="phaseLine" />
-						<ul id="choiceUl" className='d-none' />
-						<ul id='votesUl' />
+						<ul id="choiceUl" />
+						<ul id='votesUl' />	
 						
 						<form method="POST" action={'/lobbies/' + lobby.id + '/start?_method=PUT'} id='startButton' className='d-none'>
 							<input type="hidden" name="lobby_id" value={lobby.id} />
@@ -30,8 +30,8 @@ class Lobby extends React.Component {
 
 						<form method='POST' className='d-none' id='voteForm'>
 							<input type='hidden' name='player_number' id='voteFormId' />
-							<button type="submit" name="vote" className="btn btn-primary mx-1" value="true">Yes</button>
-							<button type="submit" name="vote" className="btn btn-warning mx-1" value="false">No</button>
+							<button type="submit" name="vote" className="btn btn mx--success 1" value="true">Yes</button>
+							<button type="submit" name="vote" className="btn btn-danger mx-1" value="false">No</button>
 						</form> 
 
 						<form method='POST' className = 'd-none' id = 'missionForm'>
@@ -41,15 +41,13 @@ class Lobby extends React.Component {
 							<button type="submit" name="vote" className="btn btn-danger mx-1" value="false" id='failButton'>Fail</button>
 						</form>
 
-					</div>
-					<div className="card p-3 my-2 shadow-sm" id = 'dashboard'>
 						<p id='playerLine' className='my-0'/>
 						<div id='scoreboard' />
 					</div>
 				</div>
 
-				<div className="col-12 col-lg-2">
-					<div className="card p-3 my-2 shadow-sm">
+				<div className="col-12 col-md-2 p-1">
+					<div className="card p-3 my-0">
 						<h4 className="mb-2">Players</h4>
 						<div id='listPlayers' />
 					</div>

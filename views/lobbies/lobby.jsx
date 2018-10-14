@@ -56,6 +56,8 @@ class Lobby extends React.Component {
 				</div>
 
 				<Chat cookies={this.props.cookies} />
+				<script src="/socket.io/socket.io.js" />	
+				<script src="/script.js" />
 			</Layout>
 		)
 

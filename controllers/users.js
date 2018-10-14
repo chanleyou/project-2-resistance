@@ -107,6 +107,7 @@ module.exports = (db) => {
 
 			response.clearCookie('loggedin');
 			response.clearCookie('username');
+			response.clearCookie('userid');
 			response.redirect('/');
 		},
 

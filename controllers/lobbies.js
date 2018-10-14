@@ -13,8 +13,18 @@ module.exports = (db, io) => {
 					response.sendStatus(500);
 					
 				} else {
+
+					let lobbies = queryResult.rows;
+
+					db.lobbies.getAllPlayers((error, queryResult) => {
+						if (error) {
+							console.error('error getting players:', error);
+							response.sendStatus(500);
+						}
+
+						response.render('lobbies/index', {cookies: request.cookies, lobbies: lobbies, allPlayers: queryResult.rows});
+					})
 					
-					response.render('lobbies/index', {cookies: request.cookies, lobbies: queryResult.rows});
 					
 				}
 			})
@@ -27,6 +37,8 @@ module.exports = (db, io) => {
 					console.error('Error creating lobby: ', error);
 					response.sendStatus(500);
 				} else {
+
+					io.emit('refreshIndex');
 
 					response.redirect(`/lobbies/${queryResult.rows[0].id}`);
 				}
@@ -102,6 +114,7 @@ module.exports = (db, io) => {
 
 												// joins the lobby, reloads everyone's player list
 												io.emit('updateGame', request.params);
+												io.emit('refreshIndex');
 
 												response.render('lobbies/lobby', {cookies:cookies, lobby: lobby});
 											}

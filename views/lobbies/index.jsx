@@ -35,7 +35,7 @@ class JoinGame extends React.Component {
 
 			return (
 				<form className ="form-inline" method="GET" action={"/lobbies/" + lobby.id}>
-					<input type="submit" value="Join" className ="btn btn-sm btn-primary" />
+					<input type="submit" value="Enter" className ="btn btn-primary" />
 				</form>
 			)
 
@@ -48,18 +48,60 @@ class JoinGame extends React.Component {
 class Index extends React.Component {
 	render () {
 
-		let lobbies = this.props.lobbies.map(lobby => {
-			return (
-				<div key={lobby.id} className="col-12">
-					<div className="card p-3 my-2 shadow-sm">
-						<p className ="my-1">Lobby ID: {lobby.id}</p>
-						<p className ="my-1">Name: {lobby.name}</p>
-						<p className ="my-1">Host: {lobby.host_name}</p>
-						<p className ="mt-1 mb-3">Players: {lobby.player_count}/5</p>
-						<JoinGame cookies={this.props.cookies} lobby={lobby} />
+		let allPlayers = this.props.allPlayers;
+		let cookies = this.props.cookies;
+
+		let lobbies = this.props.lobbies;
+
+		for (let i in lobbies) {
+			lobbies[i]['players'] = [];
+			for (let y in allPlayers) {
+				if (allPlayers[y].lobby_id === lobbies[i].id)
+				lobbies[i].players.push(allPlayers[y]);
+			}
+		}	
+		
+		console.log(lobbies[0].players);
+
+		let lobbiesMap = lobbies.map(lobby => {
+
+			let playerInGame = false;
+
+			for (let i in lobby.players) {
+				if (parseInt(cookies.userid) === lobby.players[i].user_id) {
+					playerInGame = true;
+				}
+			}
+
+			if (lobby.mission === 6) {
+				return <div />
+			} else if (playerInGame === true) {
+				return (
+					<div key={lobby.id} className="col-12">
+						<div className="card p-3 my-2 shadow-sm">
+							<p className ="my-0">Lobby ID: {lobby.id}</p>
+							<p className ="my-0">Name: {lobby.name}</p>
+							<p className ="my-0">Host: {lobby.host_name}</p>
+							<p className ="mt-0 mb-2">Players: {lobby.players.length}/5 <strong>You are in this game!</strong></p>
+							<JoinGame cookies={this.props.cookies} lobby={lobby} />
+						</div>
 					</div>
-				</div>
-			)
+				)
+			} else if (lobby.players.length < 5) {
+				return (
+					<div key={lobby.id} className="col-12">
+						<div className="card p-3 my-2 shadow-sm">
+							<p className ="my-0">Lobby ID: {lobby.id}</p>
+							<p className ="my-0">Name: {lobby.name}</p>
+							<p className ="my-0">Host: {lobby.host_name}</p>
+							<p className ="mt-0 mb-2">Players: {lobby.players.length}/5</p>
+							<JoinGame cookies={this.props.cookies} lobby={lobby} />
+						</div>
+					</div>
+				)
+			} else {
+				return <div />
+			}
 		})
 
 		return (
@@ -70,8 +112,10 @@ class Index extends React.Component {
 					<CreateGame cookies={this.props.cookies} />
 				</div>
 
-				{lobbies}
+				{lobbiesMap}
 
+				<script src="/socket.io/socket.io.js" />					
+				<script src='/lobbies.js' />
 			</Layout>
 		)
 	}

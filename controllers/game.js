@@ -243,7 +243,7 @@ module.exports = (db, io) => {
 						} else {
 
 							if (
-								(queryResult.rowCount === 2 && (queryString.mission ==  1 || queryString.mission == 3 || queryString.mission == 4)) || (queryResult.rowCount === 3 && (queryString.mission == 2 || queryString.mission == 5))
+								(queryResult.rowCount === 2 && (queryString.mission ==  1 || queryString.mission == 3)) || (queryResult.rowCount === 3 && (queryString.mission == 2 || queryString.mission == 4 || queryString.mission == 5))
 								) {
 
 									let failVotes = 0;

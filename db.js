@@ -4,17 +4,17 @@ const users = require('./models/users');
 const lobbies = require('./models/lobbies');
 const game = require('./models/game');
 
-// var configs = {
-//   user: 'chanleyou',
-//   host: '127.0.0.1',
-//   database: 'resistance',
-//   port: 5432
-// }
-
 var configs = {
-	connectionString: process.env.DATABASE_URL,
-	ssl: true
+  user: 'chanleyou',
+  host: '127.0.0.1',
+  database: 'resistance',
+  port: 5432
 }
+
+// var configs = {
+// 	connectionString: process.env.DATABASE_URL,
+// 	ssl: true
+// }
 
 const pool = new pg.Pool(configs);
 

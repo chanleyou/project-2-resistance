@@ -5,7 +5,7 @@ const parseCookie = (cookieString) => {
 	let output = {};
 
 	let cookies = cookieString.split('; ');
-	
+
 	for (let i in cookies) {
 		let array = cookies[i].split("=");
 		output[array[0]] = array[1];
@@ -32,7 +32,7 @@ const updateScores = (lobby, thisPlayer) => {
 			let point = document.createElement('div');
 			scoreboard.appendChild(point);
 			point.classList.add('card', 'p-1', 'm-1');
-			
+
 			if (points[i].success) {
 				point.textContent = `Mission ${points[i].mission} -- Success`;
 				point.classList.add('bg-success', 'text-white');
@@ -43,10 +43,10 @@ const updateScores = (lobby, thisPlayer) => {
 				point.classList.add('bg-danger', 'text-white');
 
 				spPts++;
-			}	
+			}
 		}
 
-		if (rtPts >= 3) { 
+		if (rtPts >= 3) {
 			gameStatus.textContent = "The Resistance has won!";
 			if (thisPlayer.role === 'Resistance') {
 				phaseLine.textContent = "Good job!";
@@ -109,63 +109,61 @@ const choosePlayerForm = (lobby, players) => {
 	let selectTwo = document.createElement('select');
 	populate(selectTwo, 'choiceTwo');
 
-	if (lobby.mission === 2 || lobby.mission === 5) {
+	if (lobby.mission === 2 || lobby.mission === 4 || lobby.mission === 5) {
 		let selectThree = document.createElement('select');
 		populate(selectThree, 'choiceThree');
 	}
 
 	submitButton = document.createElement('button');
 	submitButton.type = 'submit';
-	submitButton.classList.add ('btn', 'btn-primary', 'my-1');
+	submitButton.classList.add('btn', 'btn-primary', 'my-1');
 	submitButton.textContent = 'Submit';
 	chooseForm.appendChild(submitButton);
 }
 
 // central function that decides what to show 
 // called upon by updateGame
-const gameLogic = (cookies, lobby, players, 
-	mission, votes, outcomes) => {
+const gameLogic = (cookies, lobby, players,	mission, votes, outcomes) => {
 
-		
-		let thisPlayer = {};
-		
-		// player array where player_number = index of array, makes listing players easier
-		let playerList = [null];
-		
-		for (let i in players) {
-			
-			playerList.push(players[i]);
-			
-			if (cookies.userid == players[i].user_id) {
-				thisPlayer = players[i];
-			}
-		}
+	let thisPlayer = {};
 
-		updateScores(lobby, thisPlayer);
-		
-		let fellowSpy = {};
-		
-		if (thisPlayer.role === 'Spies') {
-			for (let i in players) {
-				if (players[i].role === 'Spies' && players[i].user_id !== thisPlayer.user_id) {
-					fellowSpy = players[i];
-					break;
-				}
-			}
+	// player array where player_number = index of array, makes listing players easier
+	let playerList = [null];
+
+	for (let i in players) {
+
+		playerList.push(players[i]);
+
+		if (cookies.userid == players[i].user_id) {
+			thisPlayer = players[i];
 		}
-		
-		let currentPlayer = {};
-		
+	}
+
+	updateScores(lobby, thisPlayer);
+
+	let fellowSpy = {};
+
+	if (thisPlayer.role === 'Spies') {
 		for (let i in players) {
-			if (lobby.current_player === players[i].player_number) {
-				currentPlayer = players[i];
+			if (players[i].role === 'Spies' && players[i].user_id !== thisPlayer.user_id) {
+				fellowSpy = players[i];
 				break;
 			}
 		}
-		
-		// reset stuff
-		while (listPlayers.firstChild) {
-			listPlayers.removeChild(listPlayers.firstChild);
+	}
+
+	let currentPlayer = {};
+
+	for (let i in players) {
+		if (lobby.current_player === players[i].player_number) {
+			currentPlayer = players[i];
+			break;
+		}
+	}
+
+	// reset stuff
+	while (listPlayers.firstChild) {
+		listPlayers.removeChild(listPlayers.firstChild);
 	}
 
 	while (choiceUl.firstChild) {
@@ -200,21 +198,21 @@ const gameLogic = (cookies, lobby, players,
 
 		for (let i in players) {
 			if (players[i].player_number === mission.choice_one) {
-					choices.push(players[i]);
+				choices.push(players[i]);
 			} else if (players[i].player_number === mission.choice_two) {
 				choices.push(players[i]);
 			} else if (players[i].player_number === mission.choice_three) {
 				choices.push(players[i]);
 			}
 		}
-	
+
 		for (let i in choices) {
 			list = document.createElement('li');
 			list.textContent = `${choices[i].player_number} ${choices[i].name}`;
 			choiceUl.appendChild(list);
 		}
 	}
-	
+
 	// playerLine controller
 	if (lobby.mission === 0) {
 		playerLine.textContent = "Waiting for game to start...";
@@ -230,13 +228,13 @@ const gameLogic = (cookies, lobby, players,
 
 	// game controller
 	if (lobby.mission === 0 && players.length < 5) {
-		
+
 		gameStatus.textContent = "Waiting for players...";
-		
+
 	} else if (lobby.mission === 0 && players.length === 5) {
-		
+
 		gameStatus.textContent = "Waiting for host to start the game.";
-		
+
 		if (lobby.host_id == cookies.userid) {
 			startButton.classList.remove('d-none');
 			startButton.addEventListener('submit', () => {
@@ -245,7 +243,7 @@ const gameLogic = (cookies, lobby, players,
 		}
 
 	} else if (lobby.mission === 6) {
-	
+
 	} else { // if mission = 1 to 5
 
 		gameStatus.textContent = `Mission ${lobby.mission}`;
@@ -254,7 +252,7 @@ const gameLogic = (cookies, lobby, players,
 
 			if (thisPlayer.player_number === currentPlayer.player_number) {
 
-				if (lobby.mission === 1 || lobby.mission === 3 || lobby.mission === 4) {
+				if (lobby.mission === 1 || lobby.mission === 3) {
 
 					phaseLine.textContent = "It's your turn! Choose 2 players to go on the mission:";
 
@@ -280,7 +278,7 @@ const gameLogic = (cookies, lobby, players,
 			} else {
 				phaseLine.textContent = `${currentPlayer.name} has chosen the following players for this mission:`
 			}
-			
+
 			choiceUl.classList.remove('d-none');
 
 			let hasPlayerVoted = false;
@@ -294,12 +292,12 @@ const gameLogic = (cookies, lobby, players,
 				list = document.createElement('li');
 
 				let player_number = votes[i].player_number;
-				
+
 				if (votes[i].vote) {
-					list.textContent = `${votes[i].player_number} ${playerList[player_number].name} voted yes.`; 
+					list.textContent = `${votes[i].player_number} ${playerList[player_number].name} voted yes.`;
 				} else {
 					list.textContent = `${votes[i].player_number} ${playerList[player_number].name} voted no.`;
-				} 
+				}
 
 				votesUl.appendChild(list);
 			}
@@ -329,9 +327,9 @@ const gameLogic = (cookies, lobby, players,
 						yourOutcome = outcomes[i];
 						doneMission = true;
 						break;
-					}	
+					}
 				}
-				
+
 				if (doneMission) {
 
 					if (yourOutcome.vote) {
@@ -346,8 +344,8 @@ const gameLogic = (cookies, lobby, players,
 					missionForm.action = `/lobbies/${lobby.id}/${lobby.mission}/mission`;
 					missionFormId.value = thisPlayer.player_number;
 					missionFormcurrent.value = lobby.current_player;
-	
-	
+
+
 					missionForm.addEventListener('submit', () => {
 						missionForm.classList.add('d-none');
 					})
@@ -355,7 +353,7 @@ const gameLogic = (cookies, lobby, players,
 					if (thisPlayer.role === 'Resistance') {
 						failButton.disabled = 'true';
 					}
-					
+
 					phaseLine.textContent = 'What will you do for the mission?'
 				}
 
@@ -369,7 +367,8 @@ const gameLogic = (cookies, lobby, players,
 	}
 }
 
-// 
+// gets all AJAX queries and updates stuff before passing into gameLogic
+// in retrospect each individual phase/mission should have been its own function to reduce number of AJAX calls 
 const updateGame = (lobby, cookies) => {
 
 	let request = new XMLHttpRequest();
@@ -377,11 +376,11 @@ const updateGame = (lobby, cookies) => {
 	request.addEventListener("load", function () {
 
 		let players = JSON.parse(this.responseText);
-		
+
 		let request = new XMLHttpRequest();
 
 		request.addEventListener("load", function () {
-	
+
 			let lobby = JSON.parse(this.responseText);
 
 			let request = new XMLHttpRequest();
@@ -410,20 +409,20 @@ const updateGame = (lobby, cookies) => {
 						request.open('GET', `/lobbies/${lobby.id}/${lobby.mission}/outcomes`);
 						request.send();
 					})
-					
+
 					request.open('GET', `/lobbies/${lobby.id}/${lobby.mission}/votes`);
 					request.send();
 
 				} else {
 
-					gameLogic(cookies,lobby, players);
+					gameLogic(cookies, lobby, players);
 				}
 			})
 
 			request.open("GET", `/lobbies/${lobby.id}/${lobby.mission}`);
 			request.send();
 		})
-	
+
 		request.open("GET", `/lobbies/${lobby.id}/status`);
 		request.send();
 	})
@@ -437,20 +436,20 @@ window.onload = () => {
 
 	let cookies = parseCookie(document.cookie);
 	const lobby = {
-		id: document.title.replace(/\D/g,'')
+		id: document.title.replace(/\D/g, '')
 	};
 
 	updateGame(lobby, cookies);
 
 	// socket EMITS chat	
 	chatForm.addEventListener('submit', (event) => {
-	
+
 		event.preventDefault();
-	
+
 		if (chatField.value) {
 			socket.emit('chat', lobby, chatField.value);
 			chatField.value = "";
-		}	
+		}
 	})
 
 	// socket receives chat
@@ -462,7 +461,7 @@ window.onload = () => {
 			newLine.classList.add('my-0');
 			newLine.textContent = `${username}: ${message}`;
 			chatArea.appendChild(newLine);
-	
+
 			if (chatArea.childNodes.length > 10) {
 				chatArea.removeChild(chatArea.firstChild);
 			}
@@ -473,7 +472,7 @@ window.onload = () => {
 	socket.on('updateGame', (lobbyFrom) => {
 		if (lobbyFrom.id === lobby.id) {
 			updateGame(lobby, cookies);
-		} 
+		}
 	})
 
 	socket.on('updateScores', (lobbyFrom) => {

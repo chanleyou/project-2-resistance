@@ -9,11 +9,11 @@ class Lobby extends React.Component {
 
 		return (
 			<Layout cookies={this.props.cookies} title={'Game ' + lobby.id}>
-				<div className="col-12 p-2 my-0">
+				<div className="col-12 px-3 py-2 my-0">
 					<h2 className="m-0">{lobby.name}</h2>
 				</div>
 
-				<div className="col-12 col-md-10 p-1">
+				<div className="col-12 col-md-10 p-2">
 					<div className="card p-3 my-0" id='gameBoard'>
 						<h4 id='gameStatus' />
 						<p id="phaseLine" />
@@ -30,7 +30,7 @@ class Lobby extends React.Component {
 
 						<form method='POST' className='d-none' id='voteForm'>
 							<input type='hidden' name='player_number' id='voteFormId' />
-							<button type="submit" name="vote" className="btn btn mx--success 1" value="true">Yes</button>
+							<button type="submit" name="vote" className="btn btn-success" value="true">Yes</button>
 							<button type="submit" name="vote" className="btn btn-danger mx-1" value="false">No</button>
 						</form> 
 
@@ -41,12 +41,12 @@ class Lobby extends React.Component {
 							<button type="submit" name="vote" className="btn btn-danger mx-1" value="false" id='failButton'>Fail</button>
 						</form>
 
-						<p id='playerLine' className='my-0'/>
+						<p id='playerLine' className='mt-3 my-0'/>
 						<div id='scoreboard' />
 					</div>
 				</div>
 
-				<div className="col-12 col-md-2 p-1">
+				<div className="col-12 col-md-2 p-2">
 					<div className="card p-3 my-0">
 						<h4 className="mb-2">Players</h4>
 						<div id='listPlayers' />

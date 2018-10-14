@@ -5,7 +5,7 @@ class Chat extends React.Component {
 
 		return (
 			// fill out the className
-			<div className="col-12 p-1"> 
+			<div className="col-12 p-2"> 
 				<div className="card p-3 my-0">
 					<h4>Chat</h4>
 					<div id="chatArea" className="mt-1 mb-3">

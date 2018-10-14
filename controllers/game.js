@@ -55,8 +55,6 @@ module.exports = (db, io) => {
 								response.sendStatus(500);
 							} else {
 
-								console.log(request.params);
-		
 								db.game.votingPhase(request.params, (error, queryResult) => {
 									if (error) {
 										console.error('Error going to voting phase.', error);
@@ -156,10 +154,7 @@ module.exports = (db, io) => {
 								}
 								if (votesYes >= 3) {
 
-									//
 									// VOTE PASSED
-									//
-
 									db.game.missionPhase(request.params, (error, queryResult) => {
 										if (error) {
 											console.error('Error going to mission phase.', error);
@@ -247,17 +242,9 @@ module.exports = (db, io) => {
 
 						} else {
 
-							console.log(queryResult.rowCount);
-							console.log(queryResult.rows);
-							console.log(queryString.mission);
-			
 							if (
-								(queryResult.rowCount === 2 && (queryString.mission ==  1 || queryString.mission == 3 || queryString.mission == 4))
-								||
-								(queryResult.rowCount === 3 && (queryString.mission == 2 || queryString.mission == 5))
+								(queryResult.rowCount === 2 && (queryString.mission ==  1 || queryString.mission == 3 || queryString.mission == 4)) || (queryResult.rowCount === 3 && (queryString.mission == 2 || queryString.mission == 5))
 								) {
-
-									console.log('VOTES TALLIED.');
 
 									let failVotes = 0;
 
@@ -304,8 +291,6 @@ module.exports = (db, io) => {
 
 													if (resistancePts >= 3 || spiesPts >= 3) {
 
-														response.send('RESISTANCE WIN');
-
 														db.game.over(request.params, (error, queryResult) => {
 															if (error) {
 																console.error('Error ending game.');
@@ -319,7 +304,7 @@ module.exports = (db, io) => {
 													
 													} else {
 
-														let newMission = request.params.mission - -1; // fuck javascript loose typing
+														let newMission = request.params.mission - -1; // fuck javascript
 														let newPlayer = request.body.current_player - -1;
 
 														if (newPlayer === 6) {
@@ -351,8 +336,6 @@ module.exports = (db, io) => {
 									})
 
 							} else {
-
-								console.log('NOT FIRING');
 
 								response.redirect("/lobbies/" + request.params.id);
 							}

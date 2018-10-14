@@ -39,6 +39,10 @@ io.on('connection', (socket) => {
   } else {
     console.log('User logging in with cookie authentication error!');
   }
+
+  socket.on('refreshIndex', () => {
+    socket.broadcast.emit('refreshIndex');
+  })
   
   socket.on('chat', (lobby, message) => {
 

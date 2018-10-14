@@ -12,7 +12,7 @@ class CreateGame extends React.Component {
 
 		if (cookies.loggedin === sha256(cookies.userid + cookies.username + SALT)) {
 			return (
-				<form className ="form-inline my-2" method="POST" action="/lobbies">
+				<form className ="form-inline my-2" method="POST" action="/lobbies" id="createForm">
 					<input type="text" name="name" placeholder="Lobby Name" required autoComplete="off" className="form-control"/>
 					<input type="hidden" name="host_id" value={cookies.userid} />
 					<input type="submit" value="Create" className ="btn btn-success ml-1" />

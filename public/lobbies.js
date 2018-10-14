@@ -2,7 +2,12 @@ const socket = io();
 
 window.onload = () => {
 
-	socket.on('refreshIndex', (lobbyFrom) => {
+	// $('#createForm').submit(() => { 
+	// 	socket.emit('refreshIndex');
+	// });
+
+	socket.on('refreshIndex', () => {
+		console.log('hey');
 		location.reload(true);
 	})
 }

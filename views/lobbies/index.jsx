@@ -50,7 +50,6 @@ class Index extends React.Component {
 
 		let allPlayers = this.props.allPlayers;
 		let cookies = this.props.cookies;
-
 		let lobbies = this.props.lobbies;
 
 		for (let i in lobbies) {
@@ -61,17 +60,15 @@ class Index extends React.Component {
 			}
 		}	
 		
-		console.log(lobbies[0].players);
-
 		let lobbiesMap = lobbies.map(lobby => {
 
 			let playerInGame = false;
 
-			for (let i in lobby.players) {
-				if (parseInt(cookies.userid) === lobby.players[i].user_id) {
-					playerInGame = true;
+				for (let i in lobby.players) {
+					if (parseInt(cookies.userid) === lobby.players[i].user_id) {
+						playerInGame = true;
+					}
 				}
-			}
 
 			if (lobby.mission === 6) {
 				return <div />

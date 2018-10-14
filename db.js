@@ -4,16 +4,20 @@ const users = require('./models/users');
 const lobbies = require('./models/lobbies');
 const game = require('./models/game');
 
-// var configs = {
-//   user: 'chanleyou',
-//   host: '127.0.0.1',
-//   database: 'resistance',
-//   port: 5432
-// }
+var configs;
 
-var configs = {
-	connectionString: process.env.DATABASE_URL,
-	ssl: true
+if (process.env.DATABASE_URL) {
+  configs = {
+    connectionString: process.env.DATABASE_URL,
+    ssl: true
+  }
+} else {
+  configs = {
+    user: 'chanleyou',
+    host: '127.0.0.1',
+    database: 'resistance',
+    port: 5432
+  }
 }
 
 const pool = new pg.Pool(configs);

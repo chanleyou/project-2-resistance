@@ -31,15 +31,15 @@ const updateScores = (lobby, thisPlayer) => {
 		for (let i in points) {
 			let point = document.createElement('button');
 			scoreboard.appendChild(point);
-			point.classList.add('btn', 'px-2', 'pt-2', 'm-0');
+			point.classList.add('btn', 'px-2', 'pt-2', 'm-1');
 
 			if (points[i].success) {
-				point.innerHTML = `<p class="m-0'Mission ${points[i].mission} &mdash; Success</p>`;
+				point.innerHTML = `<p class="m-0">${points[i].mission} S</p>`;
 				point.classList.add('bg-success', 'text-white');
 
 				rtPts++;
 			} else {
-				point.innerHTML = `<p class="m-0">Mission ${points[i].mission} &mdash; Failed <span class="badge badge-light">${points[i].fail_votes}</span></p>`;
+				point.innerHTML = `<p class="m-0">${points[i].mission} F <span class="badge badge-light">${points[i].fail_votes}</span></p>`;
 				point.classList.add('bg-danger', 'text-white');
 
 				spPts++;
@@ -187,10 +187,12 @@ const gameLogic = (cookies, lobby, players,	mission, votes, outcomes) => {
 		}
 
 		if (players[i].role === 'Spies' && (thisPlayer.role === 'Spies' || lobby.mission === 6)) {
-			playerTag.classList.add('font-italic');
+			playerTag.innerHTML = `<span class='badge badge-danger text-light'>${players[i].player_number}</span> ${players[i].name}`;
+		} else {
+		playerTag.innerHTML = `${players[i].player_number} ${players[i].name}`;
+
 		}
 
-		playerTag.textContent = `${players[i].player_number} ${players[i].name}`
 		listPlayers.appendChild(playerTag);
 	}
 
@@ -462,9 +464,7 @@ window.onload = () => {
 
 		if (lobbyFrom.id === lobby.id) {
 
-			console.log(chatArea.scrollTop);
-
-				while (chatArea.firstChild) {
+			while (chatArea.firstChild) {
 				chatArea.removeChild(chatArea.firstChild);
 			}
 
@@ -476,7 +476,6 @@ window.onload = () => {
 			}
 
 			chatArea.scrollTop = chatArea.scrollHeight;
-
 		}
 	})
 

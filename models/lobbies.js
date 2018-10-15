@@ -67,6 +67,26 @@ module.exports = (pool) => {
 			pool.query(queryString, (error, queryResult) => {
 				callback(error, queryResult);
 			})
+		},
+
+		chat: (query, callback) => {
+
+			const queryString = 'INSERT INTO lobby_chat (lobby_id, username, user_id, message) VALUES ($1, $2, $3, $4) RETURNING *;';
+			const values = [query.id, query.username, query.user_id, query.message];
+
+			pool.query(queryString, values, (error, queryResult) => {
+				callback(error, queryResult);
+			})
+		},
+
+		getChat: (query, callback) => {
+
+			const queryString = 'SELECT * FROM lobby_chat WHERE lobby_id = $1 ORDER BY id ASC'; 
+			const values = [query.id];
+
+			pool.query(queryString, values, (error, queryResult) => {
+				callback(error, queryResult);
+			})
 		}
 
 	}

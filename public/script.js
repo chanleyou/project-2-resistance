@@ -29,17 +29,17 @@ const updateScores = (lobby, thisPlayer) => {
 		let spPts = 0;
 
 		for (let i in points) {
-			let point = document.createElement('div');
+			let point = document.createElement('button');
 			scoreboard.appendChild(point);
-			point.classList.add('card', 'p-1', 'm-1');
+			point.classList.add('btn', 'px-2', 'pt-2', 'm-0');
 
 			if (points[i].success) {
-				point.textContent = `Mission ${points[i].mission} -- Success`;
+				point.innerHTML = `<p class="m-0'Mission ${points[i].mission} &mdash; Success</p>`;
 				point.classList.add('bg-success', 'text-white');
 
 				rtPts++;
 			} else {
-				point.textContent = `Mission ${points[i].mission} -- Failure (${points[i].fail_votes})`;
+				point.innerHTML = `<p class="m-0">Mission ${points[i].mission} &mdash; Failed <span class="badge badge-light">${points[i].fail_votes}</span></p>`;
 				point.classList.add('bg-danger', 'text-white');
 
 				spPts++;
@@ -443,6 +443,8 @@ window.onload = () => {
 	};
 
 	updateGame(lobby, cookies);
+	
+	socket.emit('joinedChat', lobby);
 
 	// socket EMITS chat	
 	chatForm.addEventListener('submit', (event) => {
@@ -456,18 +458,25 @@ window.onload = () => {
 	})
 
 	// socket receives chat
-	socket.on('chat', (lobbyFrom, username, message) => {
+	socket.on('chat', (lobbyFrom, chat) => {
 
 		if (lobbyFrom.id === lobby.id) {
 
-			let newLine = document.createElement('p');
-			newLine.classList.add('my-0');
-			newLine.textContent = `${username}: ${message}`;
-			chatArea.appendChild(newLine);
+			console.log(chatArea.scrollTop);
 
-			if (chatArea.childNodes.length > 10) {
+				while (chatArea.firstChild) {
 				chatArea.removeChild(chatArea.firstChild);
 			}
+
+			for (let i in chat) {
+				let newLine = document.createElement('p');
+				newLine.classList.add('m-0');
+				newLine.textContent = `${chat[i].username}: ${chat[i].message}`;
+				chatArea.appendChild(newLine);
+			}
+
+			chatArea.scrollTop = chatArea.scrollHeight;
+
 		}
 	})
 

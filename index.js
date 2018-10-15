@@ -48,9 +48,45 @@ io.on('connection', (socket) => {
 
     if (cookies.loggedin === sha256(cookies.userid + cookies.username + SALT)) {
 
-      console.log(`Message by ${cookies.username}: ${message}`);
-      io.emit('chat', lobby, cookies.username, message);
+      let query = {
+        id: lobby.id,
+        username: cookies.username,
+        user_id: cookies.userid,
+        message: message
+      }
+
+      db.lobbies.chat(query, (error) => {
+        if (error) {
+          console.log('Error on chat: ', error);
+        } else { 
+
+          db.lobbies.getChat(lobby, (error, queryResult) => {
+            if (error) {
+              console.log('Error broadcasting chat:', error);
+            } else {
+
+              io.emit('chat', lobby, queryResult.rows);
+            }
+          })
+        }
+      })
     } 
+  })
+
+  socket.on('joinedChat', (lobby) => {
+
+    if (cookies.loggedin === sha256(cookies.userid + cookies.username + SALT)) {
+
+      db.lobbies.getChat(lobby, (error, queryResult) => {
+        if (error) {
+          console.log('Error broadcasting chat:', error);
+        } else {
+
+          socket.emit('chat', lobby, queryResult.rows);
+        }
+      })
+    }
+
   })
 
   socket.on('disconnect', () => {

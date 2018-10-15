@@ -150,6 +150,20 @@ module.exports = (db, io) => {
 			})
 		},
 		
+		getChat: (request, response) => {
+
+			db.lobbies.getChat(request.params, (error, queryResult) => {
+				if (error) {
+					console.error('Error getting chat: ', error);
+					response.sendStatus(500);
+				} else {
+
+					console.log(queryResult.rows);
+
+					response.send(queryResult.rows);
+				}
+			})
+		}
 
 
 

@@ -8,7 +8,7 @@ class Chat extends React.Component {
 			<div className="col-12 p-2"> 
 				<div className="card p-3 my-0">
 					<h4>Chat</h4>
-					<div id="chatArea" className="mt-1 mb-3">
+					<div id="chatArea" className="mt-1 mb-3 text-secondary p-1" style={{height: '12rem', overflow: 'auto'}}>
 					</div>
 					<form id="chatForm" className="form-inline">
 						<input type="text" id="chatField" className="form-control col" autoComplete="off" />

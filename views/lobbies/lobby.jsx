@@ -22,7 +22,7 @@ class Lobby extends React.Component {
 						
 						<form method="POST" action={'/lobbies/' + lobby.id + '/start?_method=PUT'} id='startButton' className='d-none'>
 							<input type="hidden" name="lobby_id" value={lobby.id} />
-							<input type="submit" value="Start Game" className ="btn btn-lg btn-primary" />
+							<input type="submit" vaue="Start Game" className ="btn btn-lg btn-primary" />
 						</form>
 
 						<form method="POST" action={'/lobbies/' + lobby.id + '/choose?_method=PUT'} id='chooseForm' className='d-none'>
@@ -42,7 +42,7 @@ class Lobby extends React.Component {
 						</form>
 
 						<p id='playerLine' className='mt-3 my-0'/>
-						<div id='scoreboard' />
+						<div id='scoreboard' className ='mt-2 mb-0' />
 					</div>
 				</div>
 

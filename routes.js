@@ -19,6 +19,7 @@ module.exports = (app, db, io) => {
 	app.get('/lobbies/:id/points', game.getPoints);
 	app.get('/lobbies/:id/status', lobbies.getStatus);
 	
+	app.get('/lobbies/:id/getChat', lobbies.getChat);
 	app.post('/lobbies/:id/getPlayers', lobbies.getPlayers); // this is a post even though it should be a get to avoid cheating as it reveals player roles
 	app.get('/lobbies/:id/:mission', game.getMission);
 	

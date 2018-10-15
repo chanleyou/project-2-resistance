@@ -77,6 +77,7 @@ DROP TABLE IF EXISTS lobby_chat;
 CREATE TABLE IF NOT EXISTS lobby_chat (
 	id SERIAL PRIMARY KEY,
 	lobby_id INTEGER,
+	username TEXT,
 	user_id INTEGER,
 	message TEXT,
 	created_at TIMESTAMPTZ DEFAULT now()

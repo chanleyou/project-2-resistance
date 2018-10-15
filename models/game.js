@@ -190,9 +190,27 @@ module.exports = (pool) => {
 			pool.query(queryString, values, (error, queryResult) => {
 				callback(error, queryResult);
 			})
-		}
+		},
 
-		
+		getAllMissions: (query, callback) => {
+
+			const queryString = 'SELECT * FROM missions WHERE lobby_id = $1;';
+			const values = [query.id];
+
+			pool.query(queryString, values, (error, queryResult) => {
+				callback(error, queryResult);
+			})
+		},
+
+		getAllVotes: (query, callback) => {
+
+			const queryString = 'SELECT * FROM votes WHERE lobby_id = $1;';
+			const values = [query.id];
+
+			pool.query(queryString, values, (error, queryResult) => {
+				callback(error, queryResult);
+			})
+		},
 
 
 

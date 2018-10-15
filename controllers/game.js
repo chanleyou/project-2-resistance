@@ -1,6 +1,90 @@
 module.exports = (db, io) => {
 
+	updateGame = (request) => {
+
+		db.lobbies.getId(request, (error, queryResult) => {
+			if (error) {
+				console.error('Error getting players in lobby:', error);
+				response.sendStatus(500);
+
+			} else {
+
+				let lobby = queryResult.rows[0];
+
+				db.lobbies.getPlayers(lobby, (error, queryResult) => {
+					if (error) {
+						console.error('Error getting players in lobby:', error);
+						response.sendStatus(500);
+
+					} else {
+
+						players = queryResult.rows;
+
+						db.game.getMission(lobby, (error, queryResult) => {
+							if (error) {
+								console.error('Error getting players in lobby:', error);
+								response.sendStatus(500);
+
+							} else {
+
+								mission = queryResult.rows[0];
+
+								db.game.getVotes(lobby, (error, queryResult) => {
+									if (error) {
+										console.error('Error getting players in lobby:', error);
+										response.sendStatus(500);
+
+									} else {
+
+										votes = queryResult.rows;
+
+										db.game.getOutcomes(lobby, (error, queryResult) => {
+											if (error) {
+												console.error('Error getting players in lobby:', error);
+												response.sendStatus(500);
+
+											} else {
+
+												outcomes = queryResult.rows;
+
+												db.game.getAllMissions(lobby, (error, queryResult) => {
+													if (error) {
+														console.error('Error getting players in lobby:', error);
+														response.sendStatus(500);
+	
+													} else {
+	
+														allMissions = queryResult.rows;
+
+														db.game.getAllVotes(lobby, (error, queryResult) => {
+															if (error) {
+																console.error('Error getting players in lobby:', error);
+																response.sendStatus(500);
+			
+															} else {
+			
+																allVotes = queryResult.rows;
+			
+																io.emit('updateGame', lobby, players, mission, votes, outcomes, allMissions, allVotes);
+															}
+														})
+													}
+												})
+											}
+										})
+									}
+								})
+							}
+						})
+					}
+				})
+			}
+		})
+	}
+
 	return {
+		
+		updateGame,
 
 		choosePhase: (request, response) => {
 
@@ -39,7 +123,7 @@ module.exports = (db, io) => {
 										response.sendStatus(500);
 									} else {
 
-										io.emit('updateGame', queryString);
+										updateGame(request.params);
 				
 										response.redirect("/lobbies/" + request.params.id);
 									}
@@ -61,7 +145,7 @@ module.exports = (db, io) => {
 										response.sendStatus(500);
 									} else {
 		
-										io.emit('updateGame', queryString);
+										updateGame(request.params);
 				
 										response.redirect("/lobbies/" + request.params.id);
 									}
@@ -297,7 +381,7 @@ module.exports = (db, io) => {
 																response.sendStatus(500);
 															} else {
 
-																io.emit('updateGame', queryString);
+																updateGame(request.params);
 																response.redirect("/lobbies/" + request.params.id);
 															}
 														})
@@ -323,7 +407,7 @@ module.exports = (db, io) => {
 																response.sendStatus(500);
 															} else {
 
-																io.emit('updateGame', queryString);
+																updateGame(request.params);
 																response.redirect("/lobbies/" + request.params.id);
 															}
 														})
@@ -370,9 +454,6 @@ module.exports = (db, io) => {
 				}
 			})
 		}, 
-
-
-
 
 
 

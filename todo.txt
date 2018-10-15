@@ -1,4 +1,4 @@
-
+implement GAME LOG
 
 
 Laundry List:

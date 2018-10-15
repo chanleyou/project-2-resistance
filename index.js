@@ -28,6 +28,9 @@ app.engine('jsx', reactEngine);
 const db = require('./db');
 require('./routes')(app, db, io);
 
+// just for the updateGame route
+const game = require('./controllers/game')(db, io);
+
 // socket.io stuff
 io.on('connection', (socket) => {
 
@@ -37,7 +40,7 @@ io.on('connection', (socket) => {
     
     console.log('User connected as: ' + cookies.username);
   } else {
-    console.log('User logging in with cookie authentication error!');
+    console.log('User not authenticated.');
   }
 
   socket.on('refreshIndex', () => {
@@ -73,7 +76,7 @@ io.on('connection', (socket) => {
     } 
   })
 
-  socket.on('joinedChat', (lobby) => {
+  socket.on('joinedGame', (lobby) => {
 
     if (cookies.loggedin === sha256(cookies.userid + cookies.username + SALT)) {
 
@@ -81,12 +84,27 @@ io.on('connection', (socket) => {
         if (error) {
           console.log('Error broadcasting chat:', error);
         } else {
-
           socket.emit('chat', lobby, queryResult.rows);
         }
       })
-    }
 
+      console.log('here!');
+
+      game.updateGame(lobby);
+    }
+  })
+
+  socket.on('updateLogs', (lobby) => {
+
+    if (cookies.loggedin === sha256(cookies.userid + cookies.username + SALT)) {
+
+      db.lobbies.getAllPlayers(lobby, (error, queryResult) => {
+        if (error) {
+
+
+        }
+     })
+    }
   })
 
   socket.on('disconnect', () => {

@@ -139,6 +139,7 @@ const gameLogic = (cookies, lobby, players,	mission, votes, outcomes) => {
 	}
 
 	updateScores(lobby, thisPlayer);
+	socket.emit('updateScores', lobby);
 
 	let fellowSpy = {};
 
@@ -443,9 +444,7 @@ window.onload = () => {
 		id: document.title.replace(/\D/g, '')
 	};
 
-	updateGame(lobby, cookies);
-	
-	socket.emit('joinedChat', lobby);
+	socket.emit('joinedGame', lobby);
 
 	// socket EMITS chat	
 	chatForm.addEventListener('submit', (event) => {
@@ -479,9 +478,11 @@ window.onload = () => {
 	})
 
 	// socket updates game
-	socket.on('updateGame', (lobbyFrom) => {
-		if (lobbyFrom.id === lobby.id) {
-			updateGame(lobby, cookies);
+	socket.on('updateGame', (lobbyFrom, players, mission, votes, outcomes, allMissions, allVotes) => {
+		
+		if (lobbyFrom.id === parseInt(lobby.id)) {
+
+			gameLogic(cookies, lobbyFrom, players, mission, votes, outcomes);
 		}
 	})
 
@@ -489,5 +490,9 @@ window.onload = () => {
 		if (lobbyFrom.id === lobby.id) {
 			updateScores(lobby);
 		}
+	})
+
+	socket.on('updateLogs', (lobbyFrom) => {
+
 	})
 }

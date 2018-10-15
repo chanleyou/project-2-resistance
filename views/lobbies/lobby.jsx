@@ -42,14 +42,17 @@ class Lobby extends React.Component {
 						</form>
 
 						<p id='playerLine' className='mt-3 my-0'/>
-						<div id='scoreboard' className ='mt-2 mb-0' />
+					
 					</div>
 				</div>
 
 				<div className="col-12 col-md-2 p-2">
 					<div className="card p-3 my-0">
-						<h4 className="mb-2">Players</h4>
-						<div id='listPlayers' />
+						<h4 className="m-0">Players</h4>
+						<div id='listPlayers' className='py-1' />
+						<h4 className="m-0">Scores</h4>
+						<div id='scoreboard' className='py-1'>
+						</div>
 					</div>
 				</div>
 

@@ -24,22 +24,21 @@ const updateScores = (lobby, thisPlayer) => {
 		while (scoreboard.firstChild) {
 			scoreboard.removeChild(scoreboard.firstChild);
 		}
-
 		let rtPts = 0;
 		let spPts = 0;
 
 		for (let i in points) {
-			let point = document.createElement('button');
+			let point = document.createElement('span');
+			point.classList.add('badge', 'mr-1');
 			scoreboard.appendChild(point);
-			point.classList.add('btn', 'px-2', 'pt-2', 'm-1');
 
 			if (points[i].success) {
-				point.innerHTML = `<p class="m-0">${points[i].mission} S</p>`;
+				point.innerHTML = `S`;
 				point.classList.add('bg-success', 'text-white');
 
 				rtPts++;
 			} else {
-				point.innerHTML = `<p class="m-0">${points[i].mission} F <span class="badge badge-light">${points[i].fail_votes}</span></p>`;
+				point.innerHTML = `F <span class="badge badge-light" style='padding:  1px 2px'>${points[i].fail_votes}</span>`;
 				point.classList.add('bg-danger', 'text-white');
 
 				spPts++;

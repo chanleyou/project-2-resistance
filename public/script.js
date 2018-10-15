@@ -54,7 +54,7 @@ const updateScores = (lobby, thisPlayer) => {
 			}
 		} else if (spPts >= 3) {
 			gameStatus.textContent = "The Spies have won!";
-			if (thisPlayer.role === 'Sp	ies') {
+			if (thisPlayer.role === 'Spies') {
 				phaseLine.textContent = "Good job!";
 			} else {
 				phaseLine.textContent = "Better luck next time...";

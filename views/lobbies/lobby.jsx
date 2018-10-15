@@ -62,7 +62,7 @@ class Lobby extends React.Component {
 
 					<div className="col p-3 border rounded-0">
 						<h4>Chat</h4>
-						<div id="chatArea" className="mt-1 mb-3 p-1 small" style={{ height: '12rem', overflow: 'auto' }}>
+						<div id="chatArea" className="mt-1 mb-3 p-1 small" style={{ height: '18rem', overflow: 'auto' }}>
 						</div>
 						<form id="chatForm" className="form-inline">
 							<input type="text" id="chatField" className="form-control col" autoComplete="off" />

@@ -80,9 +80,7 @@ class Layout extends React.Component {
 						</div>
 					</nav>
 					<div className="container">
-						<main className="row">
-							{this.props.children}
-						</main>
+						{this.props.children}
 					</div>
 					<footer className="row">
 					</footer>
@@ -98,47 +96,47 @@ class Layout extends React.Component {
 								</div>
 								<div className="modal-body">
 									<p className='text-justify small'>
-										Players are randomly split into two teams: the Resistance (3 players) and Spies (2 players). The Spies know each other's identities.  
+										Players are randomly split into two teams: the Resistance (3 players) and Spies (2 players). The Spies know each other's identities.
 									</p>
-									
+
 									<p className='text-justify small'>
-									At the start of the game, a randomly chosen mission leader chooses 2-3 players to go for the mission. The position of mission leader passes on to the next player every round.
+										At the start of the game, a randomly chosen mission leader chooses 2-3 players to go for the mission. The position of mission leader passes on to the next player every round.
 									</p>
 
 									<table className="table small table-bordered">
-									<tbody>
-										<tr>
-											<th scope="col">Mission #</th>
-											<td>1</td>
-											<td>2</td>
-											<td>3</td>
-											<td>4</td>
-											<td>5</td>
-										</tr>
-									<tr>
-											<th scope="row">Players Needed:</th>
-											<td>2</td>
-											<td>3</td>
-											<td>2</td>
-											<td>3</td>
-											<td>3</td>
-										</tr>
-									</tbody>
+										<tbody>
+											<tr>
+												<th scope="col">Mission #</th>
+												<td>1</td>
+												<td>2</td>
+												<td>3</td>
+												<td>4</td>
+												<td>5</td>
+											</tr>
+											<tr>
+												<th scope="row">Players Needed</th>
+												<td>2</td>
+												<td>3</td>
+												<td>2</td>
+												<td>3</td>
+												<td>3</td>
+											</tr>
+										</tbody>
 									</table>
-									
+
 									<p className='text-justify small'>
-									The players then vote on whether they agree with the mission leader's proposal. If the vote fails, the role of mission leader passes on to the next player. The Spies automatically win the game if the vote fails to go through five times in a row.
-									</p>
-									
-									<p className='text-justify small'>
-									Spies, if chosen for the mission can choose to sabotage it, earning them a point. The Resistance earns a point if nobody sabotages the mission.
+										The players then vote on whether they agree with the mission leader's proposal. If the vote fails, the role of mission leader passes on to the next player. The Spies automatically win the game if the vote fails to go through five times in a row.
 									</p>
 
 									<p className='text-justify small'>
-									The first team to get three points wins.
+										Spies, if chosen for the mission can choose to sabotage it, earning them a point. The Resistance earns a point if nobody sabotages the mission.
 									</p>
-									
-      					</div>
+
+									<p className='text-justify small'>
+										The first team to get three points wins.
+									</p>
+
+								</div>
 								<div className="modal-footer">
 									<button type="button" className="btn btn-secondary" data-dismiss="modal">Close</button>
 								</div>

@@ -1,6 +1,5 @@
 var React = require("react");
 var Layout = require('../layout/layout');
-var Chat = require('../layout/chat');
 
 const sha256 = require('js-sha256');
 const SALT = "latvianpotato";

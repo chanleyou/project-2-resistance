@@ -372,68 +372,36 @@ const gameLogic = (cookies, lobby, players,	mission, votes, outcomes) => {
 	}
 }
 
-// gets all AJAX queries and updates stuff before passing into gameLogic
-// in retrospect each individual phase/mission should have been its own function to reduce number of AJAX calls 
-const updateGame = (lobby, cookies) => {
+const updateLogs = (players, allMissions, allVotes) => {
 
-	let request = new XMLHttpRequest();
+	let playerList = [null];
 
-	request.addEventListener("load", function () {
+	for (let i in players) {
 
-		let players = JSON.parse(this.responseText);
+		playerList.push(players[i]);
+	}
 
-		let request = new XMLHttpRequest();
+	for (let i in allMissions) {
 
-		request.addEventListener("load", function () {
+		let playerOne = `${allMissions[i].choice_one} ${playerList[allMissions[i].choice_one].name}`;
+		let playerTwo = `${allMissions[i].choice_two} ${playerList[allMissions[i].choice_two].name}`;
 
-			let lobby = JSON.parse(this.responseText);
+		if (allMissions[i].choice_three) {
+			let playerThree = `${allMissions[i].choice_three} ${playerList[allMissions[i].choice_three].name}`;
 
-			let request = new XMLHttpRequest();
+			let line = document.createElement('p');
+			line.classList.add('m-0', 'small');
+			line.textContent = `Mission ${i- -1}: ${playerOne}, ${playerTwo}, ${playerThree}`;
+			missionLogs.appendChild(line);
+			
+		} else {
 
-			request.addEventListener('load', function () {
-
-				if (this.responseText) {
-
-					let mission = JSON.parse(this.responseText);
-
-					let request = new XMLHttpRequest();
-
-					request.addEventListener('load', function () {
-
-						let votes = JSON.parse(this.responseText);
-
-						let request = new XMLHttpRequest();
-
-						request.addEventListener('load', function () {
-
-							let outcomes = JSON.parse(this.responseText);
-
-							gameLogic(cookies, lobby, players, mission, votes, outcomes);
-						})
-
-						request.open('GET', `/lobbies/${lobby.id}/${lobby.mission}/outcomes`);
-						request.send();
-					})
-
-					request.open('GET', `/lobbies/${lobby.id}/${lobby.mission}/votes`);
-					request.send();
-
-				} else {
-
-					gameLogic(cookies, lobby, players);
-				}
-			})
-
-			request.open("GET", `/lobbies/${lobby.id}/${lobby.mission}`);
-			request.send();
-		})
-
-		request.open("GET", `/lobbies/${lobby.id}/status`);
-		request.send();
-	})
-
-	request.open("POST", `/lobbies/${lobby.id}/getPlayers`);
-	request.send();
+			let line = document.createElement('p');
+			line.classList.add('m-0', 'small');
+			line.textContent = `Mission ${i- -1}: ${playerOne}, ${playerTwo}`;
+			missionLogs.appendChild(line);
+		}
+	}
 }
 
 // stuff happens after the page loads
@@ -453,6 +421,7 @@ window.onload = () => {
 
 		if (chatField.value) {
 			socket.emit('chat', lobby, chatField.value);
+
 			chatField.value = "";
 		}
 	})
@@ -483,6 +452,8 @@ window.onload = () => {
 		if (lobbyFrom.id === parseInt(lobby.id)) {
 
 			gameLogic(cookies, lobbyFrom, players, mission, votes, outcomes);
+
+			updateLogs(players, allMissions, allVotes);
 		}
 	})
 

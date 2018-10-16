@@ -82,11 +82,3 @@ CREATE TABLE IF NOT EXISTS lobby_chat (
 	message TEXT,
 	created_at TIMESTAMPTZ DEFAULT now()
 );
-
-DROP TABLE IF EXISTS logs;
-
-CREATE TABLE IF NOT EXISTS logs (
-	id SERIAL PRIMARY KEY,
-	lobby_id INTEGER,
-	text TEXT
-);

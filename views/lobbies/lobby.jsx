@@ -54,9 +54,10 @@ class Lobby extends React.Component {
 							<div id='listPlayers' />
 						</div>
 
-						<div className="p-3 border rounded-0" id='missionLogs'>
+						<div className="p-3 border rounded-0">
 							<h5 className="card-title">Results</h5>
 							<div id='scoreboard' />
+							<div id='missionLogs' />
 						</div>
 					</div>
 

@@ -22,8 +22,10 @@ const updateScores = (lobby, thisPlayer) => {
 		let points = JSON.parse(this.responseText);
 
 		while (scoreboard.firstChild) {
+			console.log('Firing!');
 			scoreboard.removeChild(scoreboard.firstChild);
 		}
+
 		let rtPts = 0;
 		let spPts = 0;
 
@@ -70,6 +72,10 @@ const choosePlayerForm = (lobby, players) => {
 
 	let chooseForm = document.querySelector('#chooseForm');
 	chooseForm.classList.remove('d-none');
+
+	while (chooseForm.firstChild) {
+		chooseForm.removeChild(chooseForm.firstChild);
+	}
 
 	let missionId = document.createElement('input');
 	missionId.name = 'mission_number';
@@ -373,6 +379,10 @@ const gameLogic = (cookies, lobby, players,	mission, votes, outcomes) => {
 }
 
 const updateLogs = (players, allMissions, allVotes) => {
+
+	while (missionLogs.firstChild) {
+		missionLogs.removeChild(missionLogs.firstChild);
+	}
 
 	let playerList = [null];
 

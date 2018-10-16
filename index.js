@@ -88,8 +88,6 @@ io.on('connection', (socket) => {
         }
       })
 
-      console.log('here!');
-
       game.updateGame(lobby);
     }
   })

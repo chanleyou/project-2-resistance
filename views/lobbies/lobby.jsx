@@ -73,7 +73,7 @@ class Lobby extends React.Component {
 				</div>
 
 				<script src="/socket.io/socket.io.js" />
-				<script src="/script.js" />
+				<script src="/script.js" lobby={JSON.stringify(lobby)} />
 			</Layout>
 		)
 

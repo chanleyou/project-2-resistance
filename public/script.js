@@ -1,5 +1,9 @@
 const socket = io();
 
+abc = JSON.parse(document.currentScript.getAttribute('lobby'));
+
+console.log(abc);
+
 const parseCookie = (cookieString) => {
 
 	let output = {};
